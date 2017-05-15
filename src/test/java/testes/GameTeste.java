@@ -22,7 +22,7 @@ import org.junit.Test;
  */
 public class GameTeste {
 
-//    @Test
+    @Test
     public void createNewGameAndNewPlayer() {
         Player playerPO = new Player();
         playerPO.setNomePlayer("Marco");
