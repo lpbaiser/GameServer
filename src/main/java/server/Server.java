@@ -17,7 +17,7 @@ public class Server {
 
     public static int PORT = 8000;
     public static String ADDRESS = "localhost";
-    public static final String PATH_FILES = "/home/leonardo/Dropbox/Disciplinas/web/GameServer/resources";
+    public static final String PATH_FILES = "/dados/Documents/BCC/7-Periodo/DesenvolvimentoWebBack/FileServer/resources/";
 
     public static void main(String[] args) {
         try {

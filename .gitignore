@@ -1,2 +1,4 @@
 /target
 /src/main/resources/META-INF/persistence.xml
+/src/main/java/server/Server.java
+

@@ -38,7 +38,7 @@ public class GameTeste {
 
     }
 
-//    @Test
+    @Test
     public void listPlayers() {
         PlayerDAO playerDAO = new PlayerDAO();
         List<Player> players = playerDAO.list();
