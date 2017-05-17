@@ -1,6 +1,6 @@
 class Config {}
-Config.WIDTH = 800
-Config.HEIGHT= 480
+Config.WIDTH = 900
+Config.HEIGHT= 360
 Config.DEBUG = false
 Config.ANTIALIAS = false
 Config.ASSETS = 'assets/'
@@ -20,20 +20,21 @@ class PlayState extends Phaser.State {
     preload() {
         let dir = Config.ASSETS
         // mapa
-        this.game.load.tilemap('level1', `${dir}level_test.json`, 
+        this.game.load.tilemap('level1', `${dir}level1.json`, 
             null, Phaser.Tilemap.TILED_JSON);
-        this.game.load.image('tiles-1',`${dir}tileset-21x21.png`);
+        this.game.load.image('super_mario',`${dir}super_mario.png`);
     
-        this.game.load.spritesheet('dude',`${dir}dude.png`, 32, 48);
+        this.game.load.spritesheet('mario',`${dir}mario2.png`, 16, 24);
+
         this.game.load.image('background',`${dir}background3.png`);
 
-        this.game.load.spritesheet('coin',`${dir}coin.png`, 32, 32);
+        this.game.load.spritesheet('coin',`${dir}coin2.png`, 16, 16);
         
-        this.game.load.image('trophy',`${dir}trophy-200x64.png`);
+        //this.game.load.image('trophy',`${dir}trophy-200x64.png`);
     }
 
     createPlayer() {
-        this.player = new Player(this.game, this.keys, 50, 100, 'dude')
+        this.player = new Player(this.game, this.keys, 80, 100, 'mario')
         this.game.add.existing(this.player)
         
         // camera seca
@@ -49,22 +50,24 @@ class PlayState extends Phaser.State {
         this.map = this.game.add.tilemap('level1')
         // chave para o arquivo .png de tileset carregado no metodo preload()
         // corresponde ao nome usado para o tileset dentro do Tiled Editor
-        this.map.addTilesetImage('tiles-1')
+        this.map.addTilesetImage('super_mario')
 
         // deve ter o mesmo nome usado na camada criada no Tiled Editor
         this.mapLayer = this.map.createLayer('Tile Layer 1')
         // os indices sao os mesmos para o tiles no Tiled Editor, acrescidos em 1
-        this.map.setCollisionBetween(1, 11, true, 'Tile Layer 1')
+//        this.map.setCollisionBetween(40, 40, true, 'Tile Layer 1')
+        this.map.setCollision([14,15,16, 22, 23, 24, 40], true, 'Tile Layer 1')
         this.mapLayer.resizeWorld()        
 
         // para cada nova camada: criar camada e definir tiles com colisao
         this.trapsLayer = this.map.createLayer('Traps')
-        this.map.setCollision([29], true, 'Traps')        
+        //this.trapsLayer = this.map.createLayer('Coins')
+        this.map.setCollision([14], true, 'Traps')        
     }
 
     createCoins() {
         this.coins = this.game.add.group()
-        // 45 eh o indice do tile
+        // 11 eh o indice do tile
         this.map.createFromObjects('Object Layer 1', 45, 'coin',
                         0, true, false, this.coins, Coin)
     }
@@ -97,12 +100,25 @@ class PlayState extends Phaser.State {
             Phaser.Keyboard.ONE)
         fullScreenButton.onDown.add(this.toogleFullScreen, this)
 
+        let screenshotButton = this.game.input.keyboard.addKey(
+            Phaser.Keyboard.P)
+        screenshotButton.onDown.add(this.takeScreenShot, this)
+
         this.createMap()
         this.createPlayer()
         this.createCoins() // deve ser apos o createMap()
         this.cretateHud()
-        this.trophy = new Trophy(this.game)
-        this.game.add.existing(this.trophy)
+        //this.trophy = new Trophy(this.game)
+        //this.game.add.existing(this.trophy)
+    }
+
+    takeScreenShot() {
+        // jQuery
+        let imgData = this.game.canvas.toDataURL()
+
+        $('#div-screenshot').append(
+            `<img src=${imgData} alt='game screenshot' class='screenshot'>`
+        )        
     }
 
     toogleFullScreen() {
@@ -132,7 +148,13 @@ class PlayState extends Phaser.State {
         // esconde o objeto e desliga colisao (para reuso futuro)
         //coin.kill() 
         this.addScore(coin.points)
-        this.trophy.show('first death')   
+        this.sendCoins();
+        //this.trophy.show('first death')   
+    }
+
+    sendCoins(){
+        console.log(this.score)
+        
     }
 
     playerDied() {
