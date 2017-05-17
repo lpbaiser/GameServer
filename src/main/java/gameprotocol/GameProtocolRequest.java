@@ -7,15 +7,15 @@ package gameprotocol;
 
 /**
  *
- * @author romulo
+ * @author Marco
  */
-public class GCPRequest {
+public class GameProtocolRequest {
 
     private final String station;
     private final String operation;
     private Object data;
 
-    public GCPRequest(String station, GCPOperation operation, Object data) {
+    public GameProtocolRequest(String station, GameProcotolOperation operation, Object data) {
         this.station = station;
         this.operation = operation.name();
         this.data = data;
@@ -25,8 +25,8 @@ public class GCPRequest {
         return station;
     }
 
-    public GCPOperation getOperation() {
-        return GCPOperation.valueOf(operation);
+    public GameProcotolOperation getOperation() {
+        return GameProcotolOperation.valueOf(operation);
     }
 
     public Object getData() {

@@ -7,14 +7,14 @@ package gameprotocol;
 
 /**
  *
- * @author romulo
+ * @author Marco
  */
-public class GCPResponse {
+public class GameProtocolResponse {
 
-    private final GCPCode code;
+    private final GameProtocolCode code;
     private final Object data;
 
-    public GCPResponse(GCPCode code, Object data) {
+    public GameProtocolResponse(GameProtocolCode code, Object data) {
         this.code = code;
         this.data = data;
     }

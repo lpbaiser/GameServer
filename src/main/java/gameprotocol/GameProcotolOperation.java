@@ -7,8 +7,8 @@ package gameprotocol;
 
 /**
  *
- * @author romulo
+ * @author Marco
  */
-public enum GCPCode {
-    OK;
+public enum GameProcotolOperation {
+    ADD_TROPHY, LIST_TROPHY, CLEAR_TROPHY, ADD_PLAYER;
 }

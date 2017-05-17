@@ -9,7 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import controller.PlayerController;
 import game.Player;
-import gameprotocol.GCPResponse;
+import gameprotocol.GameProtocolResponse;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -87,7 +87,7 @@ public class Worker implements Runnable {
                 response = getJSON(request, path);
             } else if (path.startsWith("/game")) {
                 GameProcess gameHandler = new GameProcess();
-                GCPResponse gcpResponse = gameHandler.getGameResource(path);
+                GameProtocolResponse gcpResponse = gameHandler.getGameResource(path);
                 response = getJSON(request, gcpResponse);
             } else if (resourceExists(path)) {
                 path = "index.html";
@@ -107,7 +107,7 @@ public class Worker implements Runnable {
             path = request.getResource();
             if (path.startsWith("/game")) {
                 GameProcess gameHandler = new GameProcess();
-                GCPResponse postGameResource = gameHandler.postGameResource(request, path);
+                GameProtocolResponse postGameResource = gameHandler.postGameResource(request, path);
 
                 Gson gson = new Gson();
                 response = getJSON(request, gson.toJson(postGameResource));
