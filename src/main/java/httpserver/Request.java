@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Arrays;
@@ -31,6 +32,7 @@ public class Request {
     private Map<String, List> cabecalhos;
     private HashMap<String, String> queryParams;
     private String path;
+    private final String value;
 
     public Request(InputStream entrada) throws IOException {
         path = "";
@@ -66,6 +68,14 @@ public class Request {
             //seta o manterviva a conexao se o connection for keep-alive
             this.setKeepAlive(this.getCabecalhos().get("Connection").get(0).equals("keep-alive"));
         }
+
+        if (this.cabecalhos.get("Content-Length") != null) {
+            List<String> lengthStringList = this.cabecalhos.get("Content-Length");
+            int length = Integer.valueOf(lengthStringList.get(0));
+            this.value = readMessageBody(buffer, length);
+        } else {
+            this.value = null;
+        }
         this.parseQueryParams();
 
     }
@@ -75,6 +85,15 @@ public class Request {
             cabecalhos = new TreeMap<>();
         }
         cabecalhos.put(chave, Arrays.asList(valores));
+    }
+
+    private String readMessageBody(Reader inputStream, int size) throws IOException {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < size; i++) {
+            int read = inputStream.read();
+            stringBuilder.append((char) read);
+        }
+        return stringBuilder.toString();
     }
 
     private void parseQueryParams() throws UnsupportedEncodingException {
@@ -150,5 +169,9 @@ public class Request {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public String getValue() {
+        return value;
     }
 }

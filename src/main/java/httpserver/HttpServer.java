@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 
 public class HttpServer {
 
-    public static final String RESOURCES_PATH = "/dados/Documents/BCC/7-Periodo/DesenvolvimentoWebBack/MarioGameServer/resources/";
+    public static final String RESOURCES_PATH = "./resources/";
 
     /**
      * @param args the command line arguments
