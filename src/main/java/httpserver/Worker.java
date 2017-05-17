@@ -73,53 +73,52 @@ public class Worker implements Runnable {
     }
 
     public Response choose(String path) throws IOException {
-        switch (request.getMethod()) {
-            case "GET":
-                if (path.endsWith(".html")) {
-                    response = getResponseFile(request, path, "text/html");
-                } else if (path.endsWith(".css")) {
-                    response = getResponseFile(request, path, "text/css");
-                } else if (path.endsWith(".js")) {
-                    response = getResponseFile(request, path, "text/javascript");
-                } else if (path.endsWith(".txt")) {
-                    response = getResponseFile(request, path, "text/plain");
-                } else if (path.startsWith("/files/")) {
-                    path = path.replaceFirst("/files/", "");
-                    response = getJSON(request, path);
-                } else if (path.startsWith("/game")) {
-                    GameHandler gameHandler = new GameHandler();
-                    GCPResponse gcpResponse = gameHandler.getGameResource(path);
-                    response = getJSON(request, gcpResponse);
-                } else if (resourceExists(path)) {
+        if (request.getMethod().equals("GET")) {
+            if (path.endsWith(".html")) {
+                response = getResponseFile(request, path, "text/html");
+            } else if (path.endsWith(".css")) {
+                response = getResponseFile(request, path, "text/css");
+            } else if (path.endsWith(".js")) {
+                response = getResponseFile(request, path, "text/javascript");
+            } else if (path.endsWith(".txt")) {
+                response = getResponseFile(request, path, "text/plain");
+            } else if (path.startsWith("/files/")) {
+                path = path.replaceFirst("/files/", "");
+                response = getJSON(request, path);
+            } else if (path.startsWith("/game")) {
+                GameProcess gameHandler = new GameProcess();
+                GCPResponse gcpResponse = gameHandler.getGameResource(path);
+                response = getJSON(request, gcpResponse);
+            } else if (resourceExists(path)) {
+                path = "index.html";
+                response = getResponseFile(request, path, "text/html");
+            } else if (resourceExists(path)) {
+                if (path.contains(".")) {
+                    response = getResponseFile(request, path, detectType(path));
+                } else {
                     path = "index.html";
                     response = getResponseFile(request, path, "text/html");
-                } else if (resourceExists(path)) {
-                    if (path.contains(".")) {
-                        response = getResponseFile(request, path, detectType(path));
-                    } else {
-                        path = "index.html";
-                        response = getResponseFile(request, path, "text/html");
-                    }
-                } else {
-                    path = "-";
-                    response = getResponseFile(request, path, "text/html");
                 }
-//            case "POST":
-//                path = request.getResource();
-//                if (path.startsWith("/game")) {
-//                    GameHandler gameHandler = new GameHandler();
-//                    GCPResponse postGameResource = gameHandler.postGameResource(request, path);
-//
-//                    Gson gson = new Gson();
-//                    response = getJSON(request, gson.toJson(postGameResource));
-//                } else {
-//                    path = "-";
-//                    response = getResponseFile(request, path, "text/html");
-//                }
-//                break;
-//            default:
-//                throw new AssertionError(request.getMethod());
+            } else {
+                path = "-";
+                response = getResponseFile(request, path, "text/html");
+            }
+        } else if (request.getMethod().equals("POST")) {
+            path = request.getResource();
+            if (path.startsWith("/game")) {
+                GameProcess gameHandler = new GameProcess();
+                GCPResponse postGameResource = gameHandler.postGameResource(request, path);
+
+                Gson gson = new Gson();
+                response = getJSON(request, gson.toJson(postGameResource));
+            } else {
+                path = "-";
+                response = getResponseFile(request, path, "text/html");
+            }
+        } else {
+            throw new AssertionError(request.getMethod());
         }
+
         return response;
     }
 

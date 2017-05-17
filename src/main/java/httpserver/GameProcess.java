@@ -9,9 +9,8 @@ import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import dao.GameDAO;
 import dao.PlayerDAO;
-import dao.ProfileDAO;
 import game.Game;
-import game.Profile;
+import game.Player;
 import game.Trophy;
 import gameprotocol.GCPCode;
 import gameprotocol.GCPOperation;
@@ -28,37 +27,31 @@ import java.util.ArrayList;
  *
  * @author romulo
  */
-public class GameHandler {
+public class GameProcess {
 
-    private final Game game;
-    GameDAO gameDAO;
-    ProfileDAO profileDAO;
-    PlayerDAO playerDAO;
+    private Game game;
+    private GameDAO gameDAO;
+    private PlayerDAO playerDAO;
+    private Player player;
 
-    public GameHandler() {
+    public GameProcess() {
         this.gameDAO = new GameDAO();
-        this.profileDAO = new ProfileDAO();
         this.playerDAO = new PlayerDAO();
         Game game = new Game(1);
         game = gameDAO.obter(game);
         this.game = game;
+        player = this.game.getPlayerIdPlayer();
     }
 
     protected GCPResponse getGameResource(String path) {
         Object data = "";
         GCPCode code = GCPCode.OK;
-
-        if (path.startsWith("/game/profiles")) {
+        if (path.startsWith("/game/profile")) {
             String[] url = path.split("/");
-            if (url.length < 4) {
-                data = game.getProfiles();
-                code = GCPCode.OK;
-            } else {
-                String profileName = url[3];
-                data = game.getProfile(new Profile(profileName));
-                code = GCPCode.OK;
-            }
-        } else if (path.startsWith("/game")) {
+            data = player.getTrophyList();
+            code = GCPCode.OK;
+        } else if (path.startsWith(
+                "/game")) {
             data = game;
             code = GCPCode.OK;
         }
@@ -71,22 +64,21 @@ public class GameHandler {
         GCPCode code = GCPCode.OK;
         GameDAO gameController = new GameDAO();
         Gson gson = new Gson();
-        GCPRequest gcpRequest = gson.fromJson(request.getValue(), GCPRequest.class);
+        GCPRequest gcpRequest = gson.fromJson(request.getValue(), GCPRequest.class
+        );
         String station = gcpRequest.getStation();
-        Profile profile;
-        profile = game.getProfile(new Profile(station));
         GCPOperation operation = gcpRequest.getOperation();
         switch (operation) {
             case ADD_TROPHY:
                 LinkedTreeMap objectTrophy = (LinkedTreeMap) gcpRequest.getData();
 //                Passava um path no Trophy
                 Trophy trophy = new Trophy();
-                profile.addTrophy(trophy);
+                player.setATrophy(trophy);
                 code = GCPCode.OK;
                 data = "";
                 break;
             case LIST_TROPHY:
-                ArrayList<Trophy> trophies = profile.getTrophies();
+                ArrayList<Trophy> trophies = (ArrayList)player.getTrophyList();
                 code = GCPCode.OK;
                 data = gson.toJson(trophies);
                 break;
@@ -99,7 +91,7 @@ public class GameHandler {
             default:
                 throw new AssertionError(operation.name());
         }
-        profileDAO.update(profile);
+        playerDAO.update(player);
 
         gameController.update(game);
         code = GCPCode.OK;

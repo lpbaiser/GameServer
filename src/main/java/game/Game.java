@@ -39,36 +39,12 @@ public class Game implements Serializable {
     @JoinColumn(name = "player_id_player", referencedColumnName = "id_player")
     @ManyToOne(optional = false)
     private Player playerIdPlayer;
-    private Collection<Profile> profiles;
 
     public Game() {
-        profiles = new ArrayList<>();
-    }
-
-    public Collection<Profile> getProfiles() {
-        return profiles;
-    }
-
-    public Profile getProfile(Profile profileToFind) {
-        for (Profile profile : profiles) {
-            if (profile.getName().equals(profileToFind.getName())) {
-                return profile;
-            }
-        }
-        return null;
-    }
-
-    public void setProfiles(Collection<Profile> profiles) {
-        this.profiles = profiles;
-    }
-
-    public void insertProfile(Profile profile) {
-        this.profiles.add(profile);
     }
 
     public Game(Integer idGame) {
         this.idGame = idGame;
-        profiles = new ArrayList<>();
     }
 
     public Integer getIdGame() {
@@ -102,6 +78,9 @@ public class Game implements Serializable {
         }
         Game other = (Game) object;
         if ((this.idGame == null && other.idGame != null) || (this.idGame != null && !this.idGame.equals(other.idGame))) {
+            return false;
+        }
+        if (((Game) object).idGame != this.idGame) {
             return false;
         }
         return true;

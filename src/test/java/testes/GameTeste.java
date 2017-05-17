@@ -22,12 +22,15 @@ import org.junit.Test;
  */
 public class GameTeste {
 
-//    @Test
+    public GameTeste() {
+    }
+
+    @Test
     public void createNewGameAndNewPlayer() {
         Player playerPO = new Player();
         playerPO.setNomePlayer("Marco");
 
-        Game gamePO = new Game();
+        Game gamePO = new Game(1);
         gamePO.setPlayerIdPlayer(playerPO);
 
         PlayerDAO playerDAO = new PlayerDAO();
@@ -35,10 +38,10 @@ public class GameTeste {
 
         GameDAO gameDAO = new GameDAO();
         gameDAO.insert(gamePO);
-
+        gamePO = gameDAO.obter(gamePO);
     }
 
-//    @Test
+    @Test
     public void listPlayers() {
         PlayerDAO playerDAO = new PlayerDAO();
         List<Player> players = playerDAO.list();
@@ -47,7 +50,7 @@ public class GameTeste {
         }
     }
 
-//    @Test
+    @Test
     public void test() {
         PlayerDAO playerDAO = new PlayerDAO();
         List<Player> players = playerDAO.list();
@@ -61,15 +64,15 @@ public class GameTeste {
         String json = new Gson().toJson(list.get(0));
         System.out.println(json);
     }
-    
-//    @Test
-    public void addTrophy(){
+
+    @Test
+    public void addTrophy() {
         TrophyDAO trophyDAO = new TrophyDAO();
         List<Player> players = new ArrayList<>();
         Trophy trophy = new Trophy("10 coins", 30, "Win 10 coins", "descricao", players);
-        
+
         trophyDAO.insert(trophy);
-        
+
     }
 
 }
