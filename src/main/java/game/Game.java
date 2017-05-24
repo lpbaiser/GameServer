@@ -6,6 +6,8 @@
 package game;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -78,6 +80,9 @@ public class Game implements Serializable {
         if ((this.idGame == null && other.idGame != null) || (this.idGame != null && !this.idGame.equals(other.idGame))) {
             return false;
         }
+        if (((Game) object).idGame != this.idGame) {
+            return false;
+        }
         return true;
     }
 
@@ -85,5 +90,5 @@ public class Game implements Serializable {
     public String toString() {
         return "game.Game[ idGame=" + idGame + " ]";
     }
-    
+
 }

@@ -9,7 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import controller.PlayerController;
 import game.Player;
-import game.Trophy;
+import gameprotocol.GameProtocolResponse;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -21,7 +21,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -74,29 +73,52 @@ public class Worker implements Runnable {
     }
 
     public Response choose(String path) throws IOException {
-        switch (request.getMethod()) {
-            case "GET":
-                if (path.endsWith(".html")) {
-                    response = getResponseFile(request, path, "text/html");
-                } else if (path.endsWith(".css")) {
-                    response = getResponseFile(request, path, "text/css");
-                } else if (path.endsWith(".js")) {
-                    response = getResponseFile(request, path, "text/javascript");
-                } else if (path.endsWith(".txt")) {
-                    response = getResponseFile(request, path, "text/plain");
-                } else if (path.startsWith("/files/")) {
-                    path = path.replaceFirst("/files/", "");
-                    response = getJSON(request, path);
-                } else if (path.startsWith("/game")) {
-                    response = this.gameProcess(path);
-                } else if (resourceExists(path)) {
+        if (request.getMethod().equals("GET")) {
+            if (path.endsWith(".html")) {
+                response = getResponseFile(request, path, "text/html");
+            } else if (path.endsWith(".css")) {
+                response = getResponseFile(request, path, "text/css");
+            } else if (path.endsWith(".js")) {
+                response = getResponseFile(request, path, "text/javascript");
+            } else if (path.endsWith(".txt")) {
+                response = getResponseFile(request, path, "text/plain");
+            } else if (path.startsWith("/files/")) {
+                path = path.replaceFirst("/files/", "");
+                response = getJSON(request, path);
+            } else if (path.startsWith("/game")) {
+                GameProcess gameHandler = new GameProcess();
+                GameProtocolResponse gcpResponse = gameHandler.getGameResource(path);
+                response = getJSON(request, gcpResponse);
+            } else if (resourceExists(path)) {
+                path = "index.html";
+                response = getResponseFile(request, path, "text/html");
+            } else if (resourceExists(path)) {
+                if (path.contains(".")) {
+                    response = getResponseFile(request, path, detectType(path));
+                } else {
                     path = "index.html";
                     response = getResponseFile(request, path, "text/html");
-                } else {
-                    path = "-";
-                    response = getResponseFile(request, path, "text/html");
                 }
+            } else {
+                path = "-";
+                response = getResponseFile(request, path, "text/html");
+            }
+        } else if (request.getMethod().equals("POST")) {
+            path = request.getResource();
+            if (path.startsWith("/game")) {
+                GameProcess gameHandler = new GameProcess();
+                GameProtocolResponse postGameResource = gameHandler.postGameResource(request, path);
+
+                Gson gson = new Gson();
+                response = getJSON(request, gson.toJson(postGameResource));
+            } else {
+                path = "-";
+                response = getResponseFile(request, path, "text/html");
+            }
+        } else {
+            throw new AssertionError(request.getMethod());
         }
+
         return response;
     }
 
@@ -131,6 +153,40 @@ public class Worker implements Runnable {
         response.setHeader("Server", "MarcoServer/1.0");
         response.setHeader("Content-Type", type);
         response.setHeader("Content-Length", String.valueOf(value.length));
+        response.setResponseValue(message.getBytes());
+        response.setResponseCode(code);
+        response.setResponseValue(value);
+        return response;
+    }
+
+    private Response getJSON(Request request, Object object) {
+
+        int code;
+        Path path;
+        String message;
+        String protocol;
+        byte[] value;
+        if (object != null) {
+            Gson gson = new Gson();
+            String toJson = gson.toJson(object);
+            value = toJson.getBytes();
+        } else {
+            value = "".getBytes();
+        }
+        code = 200;
+        message = "OK";
+        protocol = request.getProtocol();
+
+        String dateGMT = getDateGTM();
+
+        Response response = new Response(protocol, code, message);
+
+        response.setHeader("Location", "http://localhost:8000/");
+        response.setHeader("Date", dateGMT);
+        response.setHeader("Server", "MarcoServer/1.0");
+        response.setHeader("Content-Type", "application/json");
+        response.setHeader("Content-Length", String.valueOf(value.length));
+
         response.setResponseValue(message.getBytes());
         response.setResponseCode(code);
         response.setResponseValue(value);
@@ -188,37 +244,6 @@ public class Worker implements Runnable {
 
     }
 
-//
-//    private Object getGameResource(String path) {
-//        Game game = new Game(1);
-//        GameController gameController = new GameController();
-//        try {
-//            game = gameController.get(game);
-//        } catch (ItemNotFoundException ex) {
-//            try {
-//                gameController.add(game);
-//            } catch (ItemAlreadyExistException ex1) {
-//                Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex1);
-//            }
-//            Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        if (path.startsWith("/game/profiles")) {
-//            String[] url = path.split("/");
-//            if (url.length < 4) {
-//                return game.getProfilesJSON();
-//            }
-//            String profileName = url[3];
-//            try {
-//                return game.getProfile(new Profile(profileName));
-//            } catch (ItemNotFoundException ex) {
-//                Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
-//                return null;
-//            }
-//        } else if (path.startsWith("/game")) {
-//            return game;
-//        }
-//        return null;
-//    }
     private String getDateGTM() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("E, dd MMM yyyy hh:mm:ss", Locale.ENGLISH);
         simpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -364,4 +389,20 @@ public class Worker implements Runnable {
         return false;
     }
 
+    private String detectType(String url) {
+        if (url.endsWith(".html")) {
+            return "text/html";
+        } else if (url.endsWith(".css")) {
+            return "text/css";
+        } else if (url.endsWith(".json")) {
+            return "application/json";
+        } else if (url.endsWith(".js")) {
+            return "text/javascript";
+        } else if (url.endsWith(".png")) {
+            return "image/png";
+        } else if (url.endsWith(".txt")) {
+            return "text/plain";
+        }
+        return "application/octet-stream";
+    }
 }

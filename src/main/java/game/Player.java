@@ -85,6 +85,10 @@ public class Player implements Serializable {
         this.trophyList = trophyList;
     }
 
+    public void setATrophy(Trophy trophy) {
+        this.trophyList.add(trophy);
+    }
+
     public List<Game> getGameList() {
         return gameList;
     }
@@ -117,5 +121,5 @@ public class Player implements Serializable {
     public String toString() {
         return "game.Player[ idPlayer=" + idPlayer + " ]";
     }
-    
+
 }
