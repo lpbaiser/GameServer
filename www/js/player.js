@@ -1,6 +1,6 @@
 
 class Player extends Phaser.Sprite {
-    constructor (game, cursors, x, y, asset) {
+    constructor(game, cursors, x, y, asset) {
         super(game, x, y, asset)
         this.keys = cursors
         this.game.physics.enable(this, Phaser.Physics.ARCADE)
@@ -8,37 +8,40 @@ class Player extends Phaser.Sprite {
         this.body.setSize(20, 8, 5, 16)
         this.anchor.setTo(0.5, 0.5)
 
-        this.animations.add('walk', [2,1,2,3], 10, true)
+        this.animations.add('walk', [2, 1, 2, 3], 10, true)
         this.animations.add('jump', [3], 10, true)
         this.animations.add('idle', [2], 10, true)
 
+        this.jumpMax = 1;
+        this.jumpCount = 0;
         let jumpButton = this.game.input.keyboard.addKey(
-            Phaser.Keyboard.UP)
+                Phaser.Keyboard.UP)
         jumpButton.onDown.add(this.jump, this)
 
 
     }
 
     jump() {
+        if (this.jumpCount < this.jumpMax) {
+            this.body.velocity.y = -350;
+        }
+        this.jumpCount++;
         if (this.body.onFloor()) {
-            this.body.velocity.y = -350
+            this.jumpCount = 0  ;
         }
     }
-
-
 
     update() {
         this.body.velocity.x = 0
 
-        if (this.keys.left.isDown){
+        if (this.keys.left.isDown) {
             this.body.velocity.x = -150
-        }
-        else if (this.keys.right.isDown){
+        } else if (this.keys.right.isDown) {
             this.body.velocity.x = 150
         }
 
         let runButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SHIFT)
-        if (runButton.isDown){
+        if (runButton.isDown) {
             this.body.velocity.x *= 1.5
         }
 
@@ -61,7 +64,7 @@ class Player extends Phaser.Sprite {
         if (this.body.velocity.x > 0)
             this.scale.x = 1
         else
-            if (this.body.velocity.x < 0)
-                this.scale.x = -1
-        }
+        if (this.body.velocity.x < 0)
+            this.scale.x = -1
     }
+}

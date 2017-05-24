@@ -1,6 +1,7 @@
-class Config {}
+class Config {
+}
 Config.WIDTH = 900
-Config.HEIGHT= 360
+Config.HEIGHT = 360
 Config.DEBUG = false
 Config.ANTIALIAS = false
 Config.ASSETS = 'assets/'
@@ -8,7 +9,7 @@ Config.ASSETS = 'assets/'
 class Game extends Phaser.Game {
     constructor() {
         super(Config.WIDTH, Config.HEIGHT, Phaser.CANVAS,
-            'game-container', null, false, Config.ANTIALIAS)
+                'game-container', null, false, Config.ANTIALIAS)
 
         this.state.add('Play', PlayState, false)
         this.state.start('Play')
@@ -18,31 +19,33 @@ class Game extends Phaser.Game {
 // Fase 1
 class PlayState extends Phaser.State {
     preload() {
+        this.data = {};
         let dir = Config.ASSETS
         // mapa
-        this.game.load.tilemap('level1', `${dir}level1.json`, 
-            null, Phaser.Tilemap.TILED_JSON);
-        this.game.load.image('super_mario',`${dir}super_mario.png`);
-    
-        this.game.load.spritesheet('mario',`${dir}mario2.png`, 16, 24);
+        this.game.load.tilemap('level1', `${dir}level1.json`,
+                null, Phaser.Tilemap.TILED_JSON);
+        this.game.load.image('super_mario', `${dir}super_mario.png`);
+        this.game.load.image('tiles2', `${dir}tiles2.png`);
 
-        this.game.load.image('background',`${dir}background3.png`);
+        this.game.load.spritesheet('mario', `${dir}mario2.png`, 16, 24);
 
-        this.game.load.spritesheet('coin',`${dir}coin2.png`, 16, 16);
-        
+        this.game.load.image('background', `${dir}background3.png`);
+
+        this.game.load.spritesheet('coin', `${dir}coin2.png`, 16, 16);
+
         //this.game.load.image('trophy',`${dir}trophy-200x64.png`);
     }
 
     createPlayer() {
         this.player = new Player(this.game, this.keys, 80, 100, 'mario')
         this.game.add.existing(this.player)
-        
+
         // camera seca
         //this.game.camera.follow(this.player)
 
         // camera suave: 0.1 para X e Y eh o fator de interpolacao do deslocamento
         // da camera -> quanto maior, mais rapido ela segue o jogador
-        this.game.camera.follow(this.player, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1); 
+        this.game.camera.follow(this.player, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
     }
 
     createMap() {
@@ -51,31 +54,54 @@ class PlayState extends Phaser.State {
         // chave para o arquivo .png de tileset carregado no metodo preload()
         // corresponde ao nome usado para o tileset dentro do Tiled Editor
         this.map.addTilesetImage('super_mario')
+        this.map.addTilesetImage('tiles2')
 
         // deve ter o mesmo nome usado na camada criada no Tiled Editor
         this.mapLayer = this.map.createLayer('Tile Layer 1')
         // os indices sao os mesmos para o tiles no Tiled Editor, acrescidos em 1
 //        this.map.setCollisionBetween(40, 40, true, 'Tile Layer 1')
-        this.map.setCollision([14,15,16, 22, 23, 24, 40], true, 'Tile Layer 1')
-        this.mapLayer.resizeWorld()        
+        this.map.setCollision([14, 15, 16, 22, 23, 24, 40, 27, 28], true, 'Tile Layer 1')
+        this.mapLayer.resizeWorld()
 
         // para cada nova camada: criar camada e definir tiles com colisao
         this.trapsLayer = this.map.createLayer('Traps')
-        //this.trapsLayer = this.map.createLayer('Coins')
-        this.map.setCollision([14], true, 'Traps')        
+        this.map.setCollision(14, true, 'Traps')
+        this.map.setCollision(58, true, 'Traps')
+        this.map.setCollision(76, true, 'Traps')
+        this.map.setCollision(189, true, 'Traps')
+        this.map.setCollision(199, true, 'Traps')
+        this.CheckpointsLayer = this.map.createLayer('Checkpoints')
+        this.map.setCollision([10], true, 'Checkpoints')
     }
 
     createCoins() {
         this.coins = this.game.add.group()
         // 11 eh o indice do tile
         this.map.createFromObjects('Object Layer 1', 45, 'coin',
-                        0, true, false, this.coins, Coin)
+                0, true, false, this.coins, Coin);
     }
 
+    /*createFinalyPhase(){
+     this.endPhase = this.game.add.group();
+     this.map.createFromObjects('Object Layer 1', 39, 'super_mario',
+     0, true, false, this.endPhase, null);
+     }*/
+
     cretateHud() {
-        this.scoreText = this.game.add.text(16, 16, '', { fontSize: "16px", fill: '#ffffff' });
+        this.scoreText = this.game.add.text(16, 16, '', {fontSize: "16px", fill: '#ffffff'});
         this.scoreText.text = "COINS: 0";
-        this.scoreText.fixedToCamera = true;        
+        this.scoreText.fixedToCamera = true;
+    }
+
+    cretateHudLife() {
+        this.lifeText = this.game.add.text(100, 16, '', {fontSize: "16px", fill: '#ffffff'});
+        this.lifeText.text = "LIFE: " + this.life
+        this.lifeText.fixedToCamera = true;
+    }
+
+    setDeath() {
+        this.life -= 1
+        this.lifeText.text = "LIFE: " + this.life
     }
 
     addScore(amount) {
@@ -88,26 +114,29 @@ class PlayState extends Phaser.State {
         this.game.stage.backgroundColor = '#000000'
         //this.game.renderer.renderSession.roundPixels = true;
 
-        let bg = this.game.add.tileSprite(0, 0, 
-            Config.WIDTH, Config.HEIGHT, 'background')
+        let bg = this.game.add.tileSprite(0, 0,
+                Config.WIDTH, Config.HEIGHT, 'background')
         bg.fixedToCamera = true
-        
+
         this.keys = this.game.input.keyboard.createCursorKeys()
         this.game.physics.arcade.gravity.y = 550
         this.score = 0
+        this.life = 3
 
         let fullScreenButton = this.game.input.keyboard.addKey(
-            Phaser.Keyboard.ONE)
+                Phaser.Keyboard.ONE)
         fullScreenButton.onDown.add(this.toogleFullScreen, this)
 
         let screenshotButton = this.game.input.keyboard.addKey(
-            Phaser.Keyboard.P)
+                Phaser.Keyboard.P)
         screenshotButton.onDown.add(this.takeScreenShot, this)
 
         this.createMap()
         this.createPlayer()
         this.createCoins() // deve ser apos o createMap()
         this.cretateHud()
+        this.cretateHudLife()
+        //this.createFinalyPhase()
         //this.trophy = new Trophy(this.game)
         //this.game.add.existing(this.trophy)
     }
@@ -117,13 +146,13 @@ class PlayState extends Phaser.State {
         let imgData = this.game.canvas.toDataURL()
 
         $('#div-screenshot').append(
-            `<img src=${imgData} alt='game screenshot' class='screenshot'>`
-        )        
+                `<img src=${imgData} alt='game screenshot' class='screenshot'>`
+                )
     }
 
     toogleFullScreen() {
-        this.game.scale.fullScreenScaleMode = 
-            Phaser.ScaleManager.EXACT_FIT;
+        this.game.scale.fullScreenScaleMode =
+                Phaser.ScaleManager.EXACT_FIT;
         if (this.game.scale.isFullScreen)
             this.game.scale.stopFullScreen()
         else
@@ -135,30 +164,46 @@ class PlayState extends Phaser.State {
         this.game.physics.arcade.collide(this.player, this.mapLayer)
         // colisao do player com a camada de armadilhas
         this.game.physics.arcade.collide(
-            this.player, this.trapsLayer, this.playerDied, null, this)
+                this.player, this.trapsLayer, this.playerDied, null, this)
 
         // colisao do player com o grupo de moedas
         this.game.physics.arcade.overlap(
-            this.player, this.coins, this.collectCoin, null, this)
+                this.player, this.coins, this.collectCoin, null, this)
+
+        this.game.physics.arcade.collide(
+                this.player, this.endPhase, this.finalyPhase, null, this)
+
+        // colisao do player com o checkpoint
+        this.game.physics.arcade.collide(
+                this.player, this.CheckpointsLayer, this.saveCheckpoint, null, this)
     }
 
     collectCoin(player, coin) {
         // destroi permanentemente o objeto
-        coin.destroy() 
+        coin.destroy()
         // esconde o objeto e desliga colisao (para reuso futuro)
         //coin.kill() 
         this.addScore(coin.points)
-        this.sendCoins();
         //this.trophy.show('first death')   
     }
 
-    sendCoins(){
+    /*finalyPhase(player, endPhase){
+     console.log("ACABOU")
+     endPhase.destroy()
+     }*/
+
+    saveCheckpoint() {
+        this.sendCoins();
+    }
+
+    sendCoins() {
         console.log(this.score)
-        
+        ServerComm.addScore(this.data[this.score],
+                (response) => this.onServerResponse(response, function () {}))
     }
 
     playerDied() {
-        console.log('player died')
+        this.setDeath();
         //this.player.position.setTo(50,200)
         this.player.x = 50
         this.player.y = 200
