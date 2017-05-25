@@ -50,8 +50,7 @@ public class GameProcess {
             String[] url = path.split("/");
             data = player.getTrophyList();
             code = GameProtocolCode.OK;
-        } else if (path.startsWith(
-                "/game")) {
+        } else if (path.startsWith("/game")) {
             data = game;
             code = GameProtocolCode.OK;
         }
@@ -78,7 +77,7 @@ public class GameProcess {
                 data = "";
                 break;
             case LIST_TROPHY:
-                ArrayList<Trophy> trophies = (ArrayList)player.getTrophyList();
+                ArrayList<Trophy> trophies = (ArrayList) player.getTrophyList();
                 code = GameProtocolCode.OK;
                 data = gson.toJson(trophies);
                 break;

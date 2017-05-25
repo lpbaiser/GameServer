@@ -14,6 +14,7 @@ import game.Player;
 import game.Trophy;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -31,6 +32,7 @@ public class GameTeste {
         playerPO.setNomePlayer("Marco");
 
         Game gamePO = new Game(1);
+        Game gamePO1;
         gamePO.setPlayerIdPlayer(playerPO);
 
         PlayerDAO playerDAO = new PlayerDAO();
@@ -38,7 +40,8 @@ public class GameTeste {
 
         GameDAO gameDAO = new GameDAO();
         gameDAO.insert(gamePO);
-        gamePO = gameDAO.obter(gamePO);
+        gamePO1 = gameDAO.obter(1);
+        Assert.assertEquals(gamePO.getPlayerIdPlayer().getNomePlayer(), gamePO1.getPlayerIdPlayer().getNomePlayer());
     }
 
     @Test

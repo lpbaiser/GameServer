@@ -90,9 +90,6 @@ public class Worker implements Runnable {
                 GameProtocolResponse gcpResponse = gameHandler.getGameResource(path);
                 response = getJSON(request, gcpResponse);
             } else if (resourceExists(path)) {
-                path = "index.html";
-                response = getResponseFile(request, path, "text/html");
-            } else if (resourceExists(path)) {
                 if (path.contains(".")) {
                     response = getResponseFile(request, path, detectType(path));
                 } else {
@@ -108,7 +105,6 @@ public class Worker implements Runnable {
             if (path.startsWith("/game")) {
                 GameProcess gameHandler = new GameProcess();
                 GameProtocolResponse postGameResource = gameHandler.postGameResource(request, path);
-
                 Gson gson = new Gson();
                 response = getJSON(request, gson.toJson(postGameResource));
             } else {
@@ -141,9 +137,13 @@ public class Worker implements Runnable {
             path = Paths.get(HttpServer.RESOURCES_PATH + "404.html");
         }
         protocol = request.getProtocol();
-
-        value = Files.readAllBytes(path);
-
+//        if (type.equals("text/html")) {
+//            //Processa 
+//            value = processDynamicHtml(file);
+//        } else {
+//            value = Files.readAllBytes(path);
+//        }
+            value = Files.readAllBytes(path);
         String dateGMT = getDateGTM();
 
         Response response = new Response(protocol, code, message);
@@ -404,5 +404,16 @@ public class Worker implements Runnable {
             return "text/plain";
         }
         return "application/octet-stream";
+    }
+
+    private byte[] processDynamicHtml(File file) throws IOException {
+        byte[] value;
+        String html;
+        String footer;
+        html = String.valueOf(file);
+//        value = Files.readAllBytes(Paths.get(file.getPath()));
+        footer = "";
+        value = (html + footer).getBytes();
+        return value;
     }
 }

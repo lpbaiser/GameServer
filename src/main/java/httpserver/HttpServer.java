@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 
 public class HttpServer {
 
-    public static final String RESOURCES_PATH = "./resources/";
+    public static final String RESOURCES_PATH = "./www/";
 
     /**
      * @param args the command line arguments
