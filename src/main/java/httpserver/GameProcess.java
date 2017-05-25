@@ -94,9 +94,9 @@ public class GameProcess {
                 code = 404;
                 throw new AssertionError(operation.name());
         }
-        playerDAO.update(player);
+//        playerDAO.update(player);
 
-        gameController.update(game);
+//        gameController.update(game);
         GameProtocolResponse gcpResponse = new GameProtocolResponse(code, data);
         return gcpResponse;
     }
