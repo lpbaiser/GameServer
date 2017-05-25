@@ -11,11 +11,11 @@ package gameprotocol;
  */
 public class GameProtocolResponse {
 
-    private final int code;
+    private final int response;
     private final Object data;
 
     public GameProtocolResponse(int code, Object data) {
-        this.code = code;
+        this.response = code;
         this.data = data;
     }
 

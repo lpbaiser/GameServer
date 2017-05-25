@@ -106,7 +106,7 @@ public class Worker implements Runnable {
                 GameProcess gameHandler = new GameProcess();
                 GameProtocolResponse postGameResource = gameHandler.postGameResource(request);
                 Gson gson = new Gson();
-                response = getJSON(request, gson.toJson(postGameResource));
+                response = getJSON(request, (Object)gson.toJson(postGameResource));
             } else {
                 path = "-";
                 response = getResponseFile(request, path, "text/html");
