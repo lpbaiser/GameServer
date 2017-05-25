@@ -10,5 +10,5 @@ package gameprotocol;
  * @author Marco
  */
 public enum GameProcotolOperation {
-    ADD_TROPHY, LIST_TROPHY, CLEAR_TROPHY, ADD_PLAYER;
+    ADD_TROPHY, LIST_TROPHY, CLEAR_TROPHY, ADD_PLAYER, ADD_SCORE;
 }

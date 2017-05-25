@@ -97,22 +97,22 @@ class Trophy extends Phaser.Sprite {
 class ServerComm {
     static addTrophy(data, callback) {
         ServerComm.sendRequest(
-            'john_doe', 'add-trophy', data, callback)
+            'john_doe', 'add_trophy', data, callback)
     }
 
     static listTrophy(callback) {
         ServerComm.sendRequest(
-            'john_doe', 'list-trophy', '', callback)
+            'john_doe', 'list_trophy', '', callback)
     }
 
     static clearTrophy(callback) {
         ServerComm.sendRequest(
-            'john_doe', 'clear-trophy', '', callback)
+            'john_doe', 'clear_trophy', '', callback)
     }
 
     static addScore(data, callback){
         ServerComm.sendRequest(
-            'john_doe', 'add-score', data, callback)
+            'john_doe', 'add_score', data, callback)
     }
 
     // metodo generico a ser usado por todas as 
@@ -129,7 +129,7 @@ class ServerComm {
 
 
     static ajaxPost(data, callback) {
-        let url = 'http://localhost:8000'
+        let url = 'http://localhost:8000/game'
         $.post(url, JSON.stringify(data))
             .done(function(data, status) {
                 let jsonObj = JSON.parse(data)

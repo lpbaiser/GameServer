@@ -11,22 +11,22 @@ package gameprotocol;
  */
 public class GameProtocolRequest {
 
-    private final String station;
-    private final String operation;
+    private final String id;
+    private final String op;
     private Object data;
 
-    public GameProtocolRequest(String station, GameProcotolOperation operation, Object data) {
-        this.station = station;
-        this.operation = operation.name();
+    public GameProtocolRequest(String id, GameProcotolOperation op, Object data) {
+        this.id = id;
+        this.op = op.name();
         this.data = data;
     }
 
-    public String getStation() {
-        return station;
+    public String getId() {
+        return id;
     }
 
     public GameProcotolOperation getOperation() {
-        return GameProcotolOperation.valueOf(operation);
+        return GameProcotolOperation.valueOf(op.toUpperCase());
     }
 
     public Object getData() {

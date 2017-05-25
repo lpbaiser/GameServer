@@ -35,24 +35,24 @@ public class GameProcess {
     private Player player;
 
     public GameProcess() {
-        this.gameDAO = new GameDAO();
-        this.playerDAO = new PlayerDAO();
+//        this.gameDAO = new GameDAO();
+//        this.playerDAO = new PlayerDAO();
         Game game = new Game(1);
-        game = gameDAO.obter(game);
+//        game = gameDAO.obter(1);
         this.game = game;
         player = this.game.getPlayerIdPlayer();
     }
 
     protected GameProtocolResponse getGameResource(String path) {
         Object data = "";
-        GameProtocolCode code = GameProtocolCode.OK;
+        int code = 200;
         if (path.startsWith("/game/profile")) {
             String[] url = path.split("/");
             data = player.getTrophyList();
-            code = GameProtocolCode.OK;
+            code = 200;
         } else if (path.startsWith("/game")) {
             data = game;
-            code = GameProtocolCode.OK;
+            code = 200;
         }
         GameProtocolResponse gcpResponse = new GameProtocolResponse(code, data);
         return gcpResponse;
@@ -60,39 +60,43 @@ public class GameProcess {
 
     protected GameProtocolResponse postGameResource(Request request) {
         Object data = "";
-        GameProtocolCode code = GameProtocolCode.OK;
+        int code = 500;
         GameDAO gameController = new GameDAO();
         Gson gson = new Gson();
+//        "{status:OK,login:rmeloca,data:{asdfgretrhd}}"
         GameProtocolRequest gcpRequest = gson.fromJson(request.getValue(), GameProtocolRequest.class);
-        String station = gcpRequest.getStation();
+        String station = gcpRequest.getId();
         GameProcotolOperation operation = gcpRequest.getOperation();
         switch (operation) {
+            case ADD_SCORE:
+                code = 200;
+                break;
             case ADD_TROPHY:
                 LinkedTreeMap objectTrophy = (LinkedTreeMap) gcpRequest.getData();
 //                Passava um path no Trophy
                 Trophy trophy = new Trophy();
                 player.setATrophy(trophy);
-                code = GameProtocolCode.OK;
+                code = 200;
                 data = "";
                 break;
             case LIST_TROPHY:
                 ArrayList<Trophy> trophies = (ArrayList) player.getTrophyList();
-                code = GameProtocolCode.OK;
+                code = 200;
                 data = gson.toJson(trophies);
                 break;
             case CLEAR_TROPHY:
                 break;
             case ADD_PLAYER:
-                code = GameProtocolCode.OK;
+                code = 200;
                 data = "";
                 break;
             default:
+                code = 404;
                 throw new AssertionError(operation.name());
         }
         playerDAO.update(player);
 
         gameController.update(game);
-        code = GameProtocolCode.OK;
         GameProtocolResponse gcpResponse = new GameProtocolResponse(code, data);
         return gcpResponse;
     }
