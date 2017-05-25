@@ -58,13 +58,12 @@ public class GameProcess {
         return gcpResponse;
     }
 
-    protected GameProtocolResponse postGameResource(Request request, String path) {
+    protected GameProtocolResponse postGameResource(Request request) {
         Object data = "";
         GameProtocolCode code = GameProtocolCode.OK;
         GameDAO gameController = new GameDAO();
         Gson gson = new Gson();
-        GameProtocolRequest gcpRequest = gson.fromJson(request.getValue(), GameProtocolRequest.class
-        );
+        GameProtocolRequest gcpRequest = gson.fromJson(request.getValue(), GameProtocolRequest.class);
         String station = gcpRequest.getStation();
         GameProcotolOperation operation = gcpRequest.getOperation();
         switch (operation) {
@@ -94,7 +93,6 @@ public class GameProcess {
 
         gameController.update(game);
         code = GameProtocolCode.OK;
-        data = "";
         GameProtocolResponse gcpResponse = new GameProtocolResponse(code, data);
         return gcpResponse;
     }
