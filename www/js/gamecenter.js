@@ -136,6 +136,7 @@ class ServerComm {
                 callback(jsonObj)
             })
             .fail(function(jqXHR, status, errorThrown) {
+                console.log(status)
                 console.log('ERROR: cannot reach game server')
             })
     }

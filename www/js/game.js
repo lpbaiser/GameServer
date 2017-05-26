@@ -37,7 +37,7 @@ class PlayState extends Phaser.State {
     }
 
     createPlayer() {
-        this.player = new Player(this.game, this.keys, 80, 100, 'mario')
+        this.player = new Player(this.game, this.keys, 1800, 100, 'mario')
         this.game.add.existing(this.player)
 
         // camera seca
@@ -198,7 +198,7 @@ class PlayState extends Phaser.State {
 
     sendCoins() {
         console.log(this.score)
-        ServerComm.addScore(this.data[this.score],
+        ServerComm.addScore(this.score,
                 (response) => this.onServerResponse(response, function () {}))
     }
 
