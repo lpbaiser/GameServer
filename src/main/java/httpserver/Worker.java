@@ -8,6 +8,9 @@ package httpserver;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import controller.PlayerController;
+import dao.GameDAO;
+import dao.PlayerDAO;
+import dao.TrophyDAO;
 import game.Player;
 import gameprotocol.GameProtocolResponse;
 import java.io.BufferedWriter;
@@ -41,8 +44,11 @@ public class Worker implements Runnable {
     private BufferedWriter bufferedWriter;
     private InputStream inputStream;
     private OutputStream outputStream;
+    private GameDAO gameDAO = new GameDAO();
+    private PlayerDAO playerDAO = new PlayerDAO();
+    private TrophyDAO trophyDAO = new TrophyDAO();
 
-    public Worker(Socket clientSocket) {
+    public Worker(Socket clientSocket, GameDAO gameDAO, PlayerDAO playerDAO, TrophyDAO trophyDAO) {
         this.clientSocket = clientSocket;
         try {
             inputStream = this.clientSocket.getInputStream();
@@ -86,7 +92,7 @@ public class Worker implements Runnable {
                 path = path.replaceFirst("/files/", "");
                 response = getJSON(request, path);
             } else if (path.startsWith("/game")) {
-                GameProcess gameHandler = new GameProcess();
+                GameProcess gameHandler = new GameProcess(gameDAO, playerDAO, trophyDAO);
                 GameProtocolResponse gcpResponse = gameHandler.getGameResource(path);
                 response = getJSON(request, gcpResponse);
             } else if (resourceExists(path)) {
@@ -103,10 +109,10 @@ public class Worker implements Runnable {
         } else if (request.getMethod().equals("POST")) {
             path = request.getResource();
             if (path.startsWith("/game")) {
-                GameProcess gameHandler = new GameProcess();
+                GameProcess gameHandler = new GameProcess(gameDAO, playerDAO, trophyDAO);
                 GameProtocolResponse postGameResource = gameHandler.postGameResource(request);
                 Gson gson = new Gson();
-                response = getJSON(request, (Object)gson.toJson(postGameResource));
+                response = getJSON(request, (Object) gson.toJson(postGameResource));
             } else {
                 path = "-";
                 response = getResponseFile(request, path, "text/html");
@@ -143,7 +149,7 @@ public class Worker implements Runnable {
 //        } else {
 //            value = Files.readAllBytes(path);
 //        }
-            value = Files.readAllBytes(path);
+        value = Files.readAllBytes(path);
         String dateGMT = getDateGTM();
 
         Response response = new Response(protocol, code, message);

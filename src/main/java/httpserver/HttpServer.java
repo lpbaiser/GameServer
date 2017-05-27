@@ -9,6 +9,9 @@ package httpserver;
  *
  * @author marco
  */
+import dao.GameDAO;
+import dao.PlayerDAO;
+import dao.TrophyDAO;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -37,7 +40,10 @@ public class HttpServer {
             while (true) {
                 //aceita conexao que vier
                 Socket socket = servidor.accept();
-                Worker serverWorker = new Worker(socket);
+                GameDAO gameDAO = new GameDAO();
+                PlayerDAO playerDAO = new PlayerDAO();
+                TrophyDAO trophyDAO = new TrophyDAO();
+                Worker serverWorker = new Worker(socket, gameDAO, playerDAO, trophyDAO);
                 pool.execute(serverWorker);
             }
         } catch (IOException ex) {

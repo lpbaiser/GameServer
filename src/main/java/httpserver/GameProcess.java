@@ -9,10 +9,10 @@ import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import dao.GameDAO;
 import dao.PlayerDAO;
+import dao.TrophyDAO;
 import game.Game;
 import game.Player;
 import game.Trophy;
-import gameprotocol.GameProtocolCode;
 import gameprotocol.GameProcotolOperation;
 import static gameprotocol.GameProcotolOperation.ADD_PLAYER;
 import static gameprotocol.GameProcotolOperation.ADD_TROPHY;
@@ -22,6 +22,7 @@ import gameprotocol.GameProtocolRequest;
 import gameprotocol.GameProtocolResponse;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -30,17 +31,14 @@ import java.util.ArrayList;
 public class GameProcess {
 
     private Game game;
-    private GameDAO gameDAO;
-    private PlayerDAO playerDAO;
-    private Player player;
+    private final GameDAO gameDAO;
+    private final PlayerDAO playerDAO;
+    private final TrophyDAO trophyDAO;
 
-    public GameProcess() {
-//        this.gameDAO = new GameDAO();
-//        this.playerDAO = new PlayerDAO();
-        Game game = new Game(1);
-//        game = gameDAO.obter(1);
-        this.game = game;
-        player = this.game.getPlayerIdPlayer();
+    public GameProcess(GameDAO gameDAO, PlayerDAO playerDAO, TrophyDAO trophyDAO) {
+        this.gameDAO = new GameDAO();
+        this.playerDAO = new PlayerDAO();
+        this.trophyDAO = new TrophyDAO();
     }
 
     protected GameProtocolResponse getGameResource(String path) {
@@ -48,7 +46,7 @@ public class GameProcess {
         int code = 200;
         if (path.startsWith("/game/profile")) {
             String[] url = path.split("/");
-            data = player.getTrophyList();
+//            data = player.getTrophyList();
             code = 200;
         } else if (path.startsWith("/game")) {
             data = game;
@@ -61,28 +59,29 @@ public class GameProcess {
     protected GameProtocolResponse postGameResource(Request request) {
         Object data = "";
         int code = 500;
-        GameDAO gameController = new GameDAO();
         Gson gson = new Gson();
-//        "{status:OK,login:rmeloca,data:{asdfgretrhd}}"
         GameProtocolRequest gcpRequest = gson.fromJson(request.getValue(), GameProtocolRequest.class);
-        String station = gcpRequest.getId();
+        int idPlayer = gcpRequest.getId();
         GameProcotolOperation operation = gcpRequest.getOperation();
         switch (operation) {
             case ADD_SCORE:
+                Player player = playerDAO.obter(idPlayer);
+                List<Trophy> trophys = player.getTrophyList();
                 code = 200;
+                data = "Pontuação Adicionado";
                 break;
             case ADD_TROPHY:
                 LinkedTreeMap objectTrophy = (LinkedTreeMap) gcpRequest.getData();
 //                Passava um path no Trophy
                 Trophy trophy = new Trophy();
-                player.setATrophy(trophy);
+//                player.setATrophy(trophy);
                 code = 200;
                 data = "";
                 break;
             case LIST_TROPHY:
-                ArrayList<Trophy> trophies = (ArrayList) player.getTrophyList();
+//                ArrayList<Trophy> trophies = (ArrayList) player.getTrophyList();
                 code = 200;
-                data = gson.toJson(trophies);
+//                data = gson.toJson(trophies);
                 break;
             case CLEAR_TROPHY:
                 break;
@@ -92,6 +91,7 @@ public class GameProcess {
                 break;
             default:
                 code = 404;
+                data = "Erro, não foi possível encontrar uma solução para requisição";
                 throw new AssertionError(operation.name());
         }
 //        playerDAO.update(player);
