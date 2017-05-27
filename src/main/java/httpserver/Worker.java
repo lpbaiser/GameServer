@@ -337,7 +337,7 @@ public class Worker implements Runnable {
         if (this.request.containsQuery("player_id")) {
             String playerId = this.request.getQuery("player_id");
             PlayerController playerController = new PlayerController();
-            Player player = playerController.getPlayeerById(playerId);
+            Player player = playerController.getPlayerById(playerId);
             String playerJson = null;
             if (player != null) {
                 playerJson = new Gson().toJson(player);

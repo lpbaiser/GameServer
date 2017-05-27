@@ -65,10 +65,13 @@ public class GameProcess {
         GameProcotolOperation operation = gcpRequest.getOperation();
         switch (operation) {
             case ADD_SCORE:
+                LinkedTreeMap jScore = (LinkedTreeMap) gcpRequest.getData();
+                Double score = (Double) jScore.get("score");
                 Player player = playerDAO.obter(idPlayer);
-                List<Trophy> trophys = player.getTrophyList();
+                player.updateScore(score);
+                playerDAO.update(player);
                 code = 200;
-                data = "Pontuação Adicionada";
+                data = "Pontuação Adicionada: " + score;
                 break;
             case ADD_TROPHY:
                 LinkedTreeMap objectTrophy = (LinkedTreeMap) gcpRequest.getData();

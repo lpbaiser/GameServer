@@ -6,6 +6,7 @@
 package game;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -59,6 +60,42 @@ public class Player implements Serializable {
     public Player(Integer idPlayer, String nomePlayer) {
         this.idPlayer = idPlayer;
         this.nomePlayer = nomePlayer;
+    }
+
+    public void updateScore(double newScore) {
+        double score;
+        if (trophyList != null) {
+            if (trophyList instanceof List) {
+                for (int i = 0; i < trophyList.size(); i++) {
+                    Trophy trophy = trophyList.get(i);
+                    if (trophy.getNameTrophy().equals("score")) {
+                        score = trophy.getXpTrophy();
+                        if (newScore > score) {
+                            trophy.setXpTrophy((int) newScore);
+                            trophyList.set(i, trophy);
+                        }
+                        return;
+                    }
+                }
+                Trophy trophy = new Trophy();
+                trophy.setNameTrophy("score");
+                trophy.setDescriptionTrophy("Quantidade de moedas");
+                trophy.setIdTrophy(0);
+                trophy.setTitleTrophy("Rei das Moedas");
+                trophy.setXpTrophy((int) newScore);
+                trophyList.add(trophy);
+            }
+        } else {
+            trophyList = new ArrayList<>();
+            Trophy trophy = new Trophy();
+            trophy.setNameTrophy("score");
+            trophy.setDescriptionTrophy("Quantidade de moedas");
+            trophy.setIdTrophy(0);
+            trophy.setTitleTrophy("Rei das Moedas");
+            trophy.setXpTrophy((int) newScore);
+            trophyList.add(trophy);
+
+        }
     }
 
     public Integer getIdPlayer() {

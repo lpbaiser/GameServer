@@ -22,7 +22,7 @@ public class PlayerController {
         playerDAO = new PlayerDAO();
     }
     
-    public Player getPlayeerById(String id){
+    public Player getPlayerById(String id){
         int playerId = Integer.parseInt(id);
         Player player = playerDAO.obter(playerId);
         Player p = new Player(player.getIdPlayer(), player.getNomePlayer());
