@@ -27,7 +27,8 @@ class PlayState extends Phaser.State {
         this.game.load.image('super_mario', `${dir}super_mario.png`);
         this.game.load.image('tiles2', `${dir}tiles2.png`);
 
-        this.game.load.spritesheet('mario', `${dir}mario2.png`, 16, 24);
+        //this.game.load.spritesheet('mario', `${dir}mario2.png`, 16, 24);
+        this.game.load.spritesheet('mario', `${dir}mario-yoshi.png`, 16, 39);
 
         this.game.load.image('background', `${dir}background3.png`);
 
