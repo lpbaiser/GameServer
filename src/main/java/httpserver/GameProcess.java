@@ -68,7 +68,7 @@ public class GameProcess {
                 Player player = playerDAO.obter(idPlayer);
                 List<Trophy> trophys = player.getTrophyList();
                 code = 200;
-                data = "Pontuação Adicionado";
+                data = "Pontuação Adicionada";
                 break;
             case ADD_TROPHY:
                 LinkedTreeMap objectTrophy = (LinkedTreeMap) gcpRequest.getData();

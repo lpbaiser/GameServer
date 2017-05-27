@@ -26,7 +26,7 @@ public class GameProtocolRequest {
     }
 
     public GameProcotolOperation getOperation() {
-        return GameProcotolOperation.valueOf(op.toUpperCase());
+        return GameProcotolOperation.valueOf(op.toUpperCase().replace("-", "_"));
     }
 
     public Object getData() {
