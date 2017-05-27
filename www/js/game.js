@@ -32,6 +32,7 @@ class PlayState extends Phaser.State {
         this.game.load.image('background', `${dir}background3.png`);
 
         this.game.load.spritesheet('coin', `${dir}coin2.png`, 16, 16);
+        this.game.load.spritesheet('mush', `${dir}mush.png`, 16, 16);
 
         //this.game.load.image('trophy',`${dir}trophy-200x64.png`);
     }
@@ -75,10 +76,14 @@ class PlayState extends Phaser.State {
     }
 
     createCoins() {
-        this.coins = this.game.add.group()
+        this.coins = this.game.add.group();
         // 11 eh o indice do tile
-        this.map.createFromObjects('Object Layer 1', 45, 'coin',
-                0, true, false, this.coins, Coin);
+        this.map.createFromObjects('Object Layer 1', 45, 'coin',0, true, false, this.coins, Coin);
+    }
+    
+    createMush(){
+        this.mush = this.game.add.group();
+        this.map.createFromObjects('Mush Layer', 207, 'mush',0, true, false, this.mush, Mush);   
     }
 
     /*createFinalyPhase(){
@@ -108,6 +113,11 @@ class PlayState extends Phaser.State {
         this.score += amount
         this.scoreText.text = "COINS: " + this.score
     }
+    
+    addLife(amount) {
+        this.life += amount
+        this.lifeText.text = "LIFE: " + this.life
+    }
 
     create() {
         this.game.physics.startSystem(Phaser.Physics.ARCADE)
@@ -134,6 +144,7 @@ class PlayState extends Phaser.State {
         this.createMap()
         this.createPlayer()
         this.createCoins() // deve ser apos o createMap()
+        this.createMush() // deve ser apos o createMap()
         this.cretateHud()
         this.cretateHudLife()
         //this.createFinalyPhase()
@@ -167,8 +178,10 @@ class PlayState extends Phaser.State {
                 this.player, this.trapsLayer, this.playerDied, null, this)
 
         // colisao do player com o grupo de moedas
-        this.game.physics.arcade.overlap(
-                this.player, this.coins, this.collectCoin, null, this)
+        this.game.physics.arcade.overlap(this.player, this.coins, this.collectCoin, null, this)
+        
+        // colisao do player com o cogumelo
+        this.game.physics.arcade.overlap(this.player, this.mush, this.collectMush, null, this)
 
         this.game.physics.arcade.collide(
                 this.player, this.endPhase, this.finalyPhase, null, this)
@@ -184,6 +197,15 @@ class PlayState extends Phaser.State {
         // esconde o objeto e desliga colisao (para reuso futuro)
         //coin.kill() 
         this.addScore(coin.points)
+        //this.trophy.show('first death')   
+    }
+    
+    collectMush(player, mush) {
+        // destroi permanentemente o objeto
+        mush.destroy()
+        // esconde o objeto e desliga colisao (para reuso futuro)
+        //coin.kill() 
+        this.addLife(mush.points)
         //this.trophy.show('first death')   
     }
 

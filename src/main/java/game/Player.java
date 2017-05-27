@@ -6,7 +6,6 @@
 package game;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -22,6 +21,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  *
@@ -40,8 +41,23 @@ public class Player implements Serializable {
     @Column(name = "id_player")
     private Integer idPlayer;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 45)
     @Column(name = "nome_player")
     private String nomePlayer;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 45)
+    @Column(name = "senha")
+    private String senha;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "life")
+    private double life;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "id_level_atual")
+    private int idLevelAtual;
     @JoinTable(name = "player_has_trophy", joinColumns = {
         @JoinColumn(name = "player_id_player", referencedColumnName = "id_player")}, inverseJoinColumns = {
         @JoinColumn(name = "trophy_id_trophy", referencedColumnName = "id_trophy")})
@@ -49,6 +65,8 @@ public class Player implements Serializable {
     private List<Trophy> trophyList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "playerIdPlayer")
     private List<Game> gameList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "playerIdPlayer")
+    private List<Level> levelList;
 
     public Player() {
     }
@@ -57,45 +75,18 @@ public class Player implements Serializable {
         this.idPlayer = idPlayer;
     }
 
-    public Player(Integer idPlayer, String nomePlayer) {
+    public Player(Integer idPlayer, String nomePlayer, String senha, double life, int idLevelAtual) {
         this.idPlayer = idPlayer;
         this.nomePlayer = nomePlayer;
+        this.senha = senha;
+        this.life = life;
+        this.idLevelAtual = idLevelAtual;
     }
 
-    public void updateScore(double newScore) {
-        double score;
-        if (trophyList != null) {
-            if (trophyList instanceof List) {
-                for (int i = 0; i < trophyList.size(); i++) {
-                    Trophy trophy = trophyList.get(i);
-                    if (trophy.getNameTrophy().equals("score")) {
-                        score = trophy.getXpTrophy();
-                        if (newScore > score) {
-                            trophy.setXpTrophy((int) newScore);
-                            trophyList.set(i, trophy);
-                        }
-                        return;
-                    }
-                }
-                Trophy trophy = new Trophy();
-                trophy.setNameTrophy("score");
-                trophy.setDescriptionTrophy("Quantidade de moedas");
-                trophy.setIdTrophy(0);
-                trophy.setTitleTrophy("Rei das Moedas");
-                trophy.setXpTrophy((int) newScore);
-                trophyList.add(trophy);
-            }
-        } else {
-            trophyList = new ArrayList<>();
-            Trophy trophy = new Trophy();
-            trophy.setNameTrophy("score");
-            trophy.setDescriptionTrophy("Quantidade de moedas");
-            trophy.setIdTrophy(0);
-            trophy.setTitleTrophy("Rei das Moedas");
-            trophy.setXpTrophy((int) newScore);
-            trophyList.add(trophy);
-
-        }
+    public Player(Integer idPlayer, String nomePlayer, String senha) {
+        this.idPlayer = idPlayer;
+        this.nomePlayer = nomePlayer;
+        this.senha = senha;
     }
 
     public Integer getIdPlayer() {
@@ -114,6 +105,30 @@ public class Player implements Serializable {
         this.nomePlayer = nomePlayer;
     }
 
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+
+    public double getLife() {
+        return life;
+    }
+
+    public void setLife(double life) {
+        this.life = life;
+    }
+
+    public int getIdLevelAtual() {
+        return idLevelAtual;
+    }
+
+    public void setIdLevelAtual(int idLevelAtual) {
+        this.idLevelAtual = idLevelAtual;
+    }
+
     public List<Trophy> getTrophyList() {
         return trophyList;
     }
@@ -122,16 +137,20 @@ public class Player implements Serializable {
         this.trophyList = trophyList;
     }
 
-    public void setATrophy(Trophy trophy) {
-        this.trophyList.add(trophy);
-    }
-
     public List<Game> getGameList() {
         return gameList;
     }
 
     public void setGameList(List<Game> gameList) {
         this.gameList = gameList;
+    }
+
+    public List<Level> getLevelList() {
+        return levelList;
+    }
+
+    public void setLevelList(List<Level> levelList) {
+        this.levelList = levelList;
     }
 
     @Override

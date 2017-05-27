@@ -25,7 +25,7 @@ public class PlayerController {
     public Player getPlayerById(String id){
         int playerId = Integer.parseInt(id);
         Player player = playerDAO.obter(playerId);
-        Player p = new Player(player.getIdPlayer(), player.getNomePlayer());
+        Player p = new Player(player.getIdPlayer(), player.getNomePlayer(), player.getSenha());
         return p;
     }
     
@@ -33,7 +33,7 @@ public class PlayerController {
         List<Player> players = playerDAO.list();
         ArrayList<Player> list = new ArrayList<Player>();
         for (Player player : players) {
-            Player p = new Player(player.getIdPlayer(), player.getNomePlayer());
+            Player p = new Player(player.getIdPlayer(), player.getNomePlayer(), player.getSenha());
             list.add(p);
         }
         return list;

@@ -17,6 +17,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  *
@@ -34,12 +36,23 @@ public class Trophy implements Serializable {
     @Basic(optional = false)
     @Column(name = "id_trophy")
     private Integer idTrophy;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 45)
     @Column(name = "name_trophy")
     private String nameTrophy;
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "xp_trophy")
-    private Integer xpTrophy;
+    private double xpTrophy;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 45)
     @Column(name = "title_trophy")
     private String titleTrophy;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 140)
     @Column(name = "description_trophy")
     private String descriptionTrophy;
     @ManyToMany(mappedBy = "trophyList")
@@ -48,16 +61,16 @@ public class Trophy implements Serializable {
     public Trophy() {
     }
 
-    public Trophy(String nameTrophy, Integer xpTrophy, String titleTrophy, String descriptionTrophy, List<Player> playerList) {
+    public Trophy(Integer idTrophy) {
+        this.idTrophy = idTrophy;
+    }
+
+    public Trophy(Integer idTrophy, String nameTrophy, double xpTrophy, String titleTrophy, String descriptionTrophy) {
+        this.idTrophy = idTrophy;
         this.nameTrophy = nameTrophy;
         this.xpTrophy = xpTrophy;
         this.titleTrophy = titleTrophy;
         this.descriptionTrophy = descriptionTrophy;
-        this.playerList = playerList;
-    }
-
-    public Trophy(Integer idTrophy) {
-        this.idTrophy = idTrophy;
     }
 
     public Integer getIdTrophy() {
@@ -76,11 +89,11 @@ public class Trophy implements Serializable {
         this.nameTrophy = nameTrophy;
     }
 
-    public Integer getXpTrophy() {
+    public double getXpTrophy() {
         return xpTrophy;
     }
 
-    public void setXpTrophy(Integer xpTrophy) {
+    public void setXpTrophy(double xpTrophy) {
         this.xpTrophy = xpTrophy;
     }
 
@@ -132,5 +145,5 @@ public class Trophy implements Serializable {
     public String toString() {
         return "game.Trophy[ idTrophy=" + idTrophy + " ]";
     }
-
+    
 }

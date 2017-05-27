@@ -68,7 +68,7 @@ public class GameProcess {
                 LinkedTreeMap jScore = (LinkedTreeMap) gcpRequest.getData();
                 Double score = (Double) jScore.get("score");
                 Player player = playerDAO.obter(idPlayer);
-                player.updateScore(score);
+                //player.updateScore(score);
                 playerDAO.update(player);
                 code = 200;
                 data = "Pontuação Adicionada: " + score;
