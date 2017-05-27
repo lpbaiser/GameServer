@@ -198,16 +198,24 @@ class PlayState extends Phaser.State {
 
     sendCoins() {
         console.log(this.score)
-        ServerComm.addScore(this.score,
-                (response) => this.onServerResponse(response, function () {}))
+        ServerComm.addScore({score:this.score}, (response) => this.onServerResponse(response))
     }
-
+    
+    onServerResponse(response){
+        console.log(response)
+        if (response['response'] != '200') {
+            console.log("ERRO de comunicao com o servidor")
+            return
+        }
+        console.log("OK")
+    }
+    
     playerDied() {
         this.setDeath();
         //this.player.position.setTo(50,200)
         this.player.x = 50
         this.player.y = 200
-        this.camera.shake(0.02, 200)
+        this.camera.shake(0.001, 300)
     }
 
     render() {
