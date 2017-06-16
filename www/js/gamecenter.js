@@ -1,14 +1,14 @@
 class ServerComm {
     static addTrophy(data, callback) {
-        ServerComm.sendRequest('john_doe', 'add-trophy', data, callback)
+        ServerComm.sendRequest('1', 'add-trophy', data, callback)
     }
 
     static listTrophy(callback) {
-        ServerComm.sendRequest('john_doe', 'list-trophy', '', callback)
+        ServerComm.sendRequest('1', 'list-trophy', '', callback)
     }
 
     static clearTrophy(callback) {
-        ServerComm.sendRequest('john_doe', 'clear-trophy', '', callback)
+        ServerComm.sendRequest('1', 'clear-trophy', '', callback)
     }
 
     static addScore(data, callback){

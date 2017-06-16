@@ -12,6 +12,8 @@ class Player extends Phaser.Sprite {
         this.animations.add('jump', [3], 10, true)
         this.animations.add('idle', [0], 10, true)
 
+        this.game.load.audio('mario-jump', ['assets/audio/mario-jump.mp3']);
+
         this.jumpMax = 1;
         this.jumpCount = 0;
         let jumpButton = this.game.input.keyboard.addKey(Phaser.Keyboard.UP)
@@ -21,12 +23,14 @@ class Player extends Phaser.Sprite {
     }
 
     jump() {
+        this.soundJump = this.game.add.audio('mario-jump');
         if (this.jumpCount < this.jumpMax) {
+            this.soundJump.play();
             this.body.velocity.y = -350;
         }
         this.jumpCount++;
         if (this.body.onFloor()) {
-            this.jumpCount = 0  ;
+            this.jumpCount = 0;
         }
     }
 
