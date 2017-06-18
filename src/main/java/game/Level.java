@@ -57,9 +57,9 @@ public class Level implements Serializable {
     @NotNull
     @Column(name = "xp")
     private int xp;
-    @JoinColumn(name = "player_id_player", referencedColumnName = "id_player")
+    @JoinColumn(name = "player_nome_player", referencedColumnName = "nome_player")
     @ManyToOne(optional = false)
-    private Player playerIdPlayer;
+    private Player playerNomePlayer;
 
     public Level() {
     }
@@ -134,12 +134,12 @@ public class Level implements Serializable {
         this.xp = xp;
     }
 
-    public Player getPlayerIdPlayer() {
-        return playerIdPlayer;
+    public Player getPlayerNomePlayer() {
+        return playerNomePlayer;
     }
 
-    public void setPlayerIdPlayer(Player playerIdPlayer) {
-        this.playerIdPlayer = playerIdPlayer;
+    public void setPlayerNomePlayer(Player playerNomePlayer) {
+        this.playerNomePlayer = playerNomePlayer;
     }
 
     @Override

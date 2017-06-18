@@ -21,19 +21,21 @@ public class PlayerController {
     public PlayerController() {
         playerDAO = new PlayerDAO();
     }
-    
-    public Player getPlayerById(String id){
+
+    public Player getPlayerById(String id) {
         int playerId = Integer.parseInt(id);
         Player player = playerDAO.obter(playerId);
-        Player p = new Player(player.getIdPlayer(), player.getNomePlayer(), player.getSenha());
+        //PlayerPK playerPk = new PlayerPK(player.getPlayerPK().getNomePlayer());
+        Player p = new Player(player.getNomePlayer(), player.getSenha());
         return p;
     }
-    
+
     public ArrayList<Player> listAllPlayers() {
         List<Player> players = playerDAO.list();
         ArrayList<Player> list = new ArrayList<Player>();
         for (Player player : players) {
-            Player p = new Player(player.getIdPlayer(), player.getNomePlayer(), player.getSenha());
+            //PlayerPK playerPk = new PlayerPK(player.getPlayerPK().getNomePlayer());
+            Player p = new Player(player.getNomePlayer(), player.getSenha());
             list.add(p);
         }
         return list;
