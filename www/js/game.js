@@ -16,7 +16,7 @@ class PlayState extends GameState {
     preload() {
         this.data = {};
         this.qtdeDied = 0;
-        this.playerX = 1800;
+        this.playerX = 100;
         this.playerY = 200;
         this.playAgain = true;
         //load map
@@ -331,32 +331,37 @@ class PlayState extends GameState {
         //this.trophy.show('first death')   
     }
 
-    /*finalyPhase(player, endPhase){
-     console.log("ACABOU")
-     endPhase.destroy()
-     }*/
 
     collectCheckPoint(player, checkPoint) {
         this.savePoint = this.game.add.audio('mario-save-point');
         this.savePoint.play();
+        this.addXp(50);
         checkPoint.destroy();
         this.saveCheckpoint();
-        this.addXp(50);
     }
 
     saveCheckpoint() {
-
-//        this.sendCoins();
         this.playerX = this.player.x;
         this.playerY = this.player.y;
+        
+        let data = {
+            coins: this.amountCoins,
+            life: this.life,
+            xp: this.xp,
+            save_point_x: this.playerX,
+            save_point_y: this.playerY,
+            save_point_id: 1
+        };
+        
+        console.log(data);
+        
+
+//        this.sendCoins();
         //console.log(this.playerX)
         //console.log(this.playerY)
+        ServerComm.addSavePoint(data, response => this.onServerResponse(response));
     }
 
-    /*sendCoins() {
-        console.log(this.xp)
-        ServerComm.addScore({score: this.xp}, (response) => this.onServerResponse(response))
-    }*/
 
     onServerResponse(response) {
         console.log(response)

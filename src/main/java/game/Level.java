@@ -49,6 +49,14 @@ public class Level implements Serializable {
     @NotNull
     @Column(name = "save_point_id")
     private double savePointId;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "life")
+    private int life;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "xp")
+    private int xp;
     @JoinColumn(name = "player_id_player", referencedColumnName = "id_player")
     @ManyToOne(optional = false)
     private Player playerIdPlayer;
@@ -60,12 +68,14 @@ public class Level implements Serializable {
         this.idLevel = idLevel;
     }
 
-    public Level(Integer idLevel, double coins, double savePointX, double savePontY, double savePointId) {
+    public Level(Integer idLevel, double coins, double savePointX, double savePontY, double savePointId, int life, int xp) {
         this.idLevel = idLevel;
         this.coins = coins;
         this.savePointX = savePointX;
         this.savePontY = savePontY;
         this.savePointId = savePointId;
+        this.life = life;
+        this.xp = xp;
     }
 
     public Integer getIdLevel() {
@@ -106,6 +116,22 @@ public class Level implements Serializable {
 
     public void setSavePointId(double savePointId) {
         this.savePointId = savePointId;
+    }
+
+    public int getLife() {
+        return life;
+    }
+
+    public void setLife(int life) {
+        this.life = life;
+    }
+
+    public int getXp() {
+        return xp;
+    }
+
+    public void setXp(int xp) {
+        this.xp = xp;
     }
 
     public Player getPlayerIdPlayer() {

@@ -7,7 +7,7 @@ class Trophy extends Phaser.Sprite {
                 {name: 'first death', xp: 10,
                     title: 'KEEP CALM AND PLAY',
                     description: 'First death on game'}
-                
+
         this.data['collector'] =
                 {name: 'noob', xp: 15,
                     title: 'THE MAN COLLECTOR',
@@ -72,6 +72,7 @@ class Trophy extends Phaser.Sprite {
             console.log("ERRO de comunicao com o servidor")
             return
         }
+        console.log("status: " + response['response'])
         this.achieved.push(trophyName)
 
         //let panel = this.createPanel(trophyName)
@@ -106,7 +107,7 @@ class Templates {
 }
 Templates.trophiesListItem = Handlebars.compile(
         $('#template-trophies-list-item').html()
-        )
+        );
 Templates.profileItem = Handlebars.compile(
         $('#template-profile-item').html()
-        )
+        );

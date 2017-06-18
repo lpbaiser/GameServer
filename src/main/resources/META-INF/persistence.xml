@@ -4,8 +4,8 @@
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>game.Trophy</class>
     <class>game.Game</class>
-    <class>game.Level</class>
     <class>game.Player</class>
+    <class>game.Level</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/game_server?zeroDateTimeBehavior=convertToNull"/>
       <property name="javax.persistence.jdbc.user" value="root"/>

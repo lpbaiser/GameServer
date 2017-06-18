@@ -79,6 +79,8 @@ CREATE TABLE IF NOT EXISTS `game_server`.`level` (
   `save_point_x` DOUBLE NOT NULL,
   `save_pont_y` DOUBLE NOT NULL,
   `save_point_id` DOUBLE NOT NULL,
+  `life` INT NOT NULL,
+  `xp` INT NOT NULL,
   PRIMARY KEY (`id_level`),
   INDEX `fk_level_player1_idx` (`player_id_player` ASC),
   CONSTRAINT `fk_level_player1`

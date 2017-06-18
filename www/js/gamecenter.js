@@ -1,18 +1,22 @@
 class ServerComm {
     static addTrophy(data, callback) {
-        ServerComm.sendRequest('1', 'add-trophy', data, callback)
+        ServerComm.sendRequest('1', 'add-trophy', data, callback);
     }
 
     static listTrophy(callback) {
-        ServerComm.sendRequest('1', 'list-trophy', '', callback)
+        ServerComm.sendRequest('1', 'list-trophy', '', callback);
     }
 
     static clearTrophy(callback) {
-        ServerComm.sendRequest('1', 'clear-trophy', '', callback)
+        ServerComm.sendRequest('1', 'clear-trophy', '', callback);
     }
 
     static addScore(data, callback){
-        ServerComm.sendRequest('1', 'add-score', data, callback)
+        ServerComm.sendRequest('1', 'add-score', data, callback);
+    }
+    
+    static addSavePoint(data, callback){
+        ServerComm.sendRequest('1', 'save-point', data, callback);
     }
 
     // metodo generico a ser usado por todas as 
