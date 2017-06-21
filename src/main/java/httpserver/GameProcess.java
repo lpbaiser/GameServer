@@ -9,9 +9,11 @@ import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import controller.PlayerController;
 import dao.GameDAO;
+import dao.LevelDAO;
 import dao.PlayerDAO;
 import dao.TrophyDAO;
 import game.Game;
+import game.Level;
 import game.Player;
 import game.Trophy;
 import gameprotocol.GameProcotolOperation;
@@ -36,6 +38,8 @@ public class GameProcess {
     private final PlayerController playerController;
     private final PlayerDAO playerDAO;
     private final TrophyDAO trophyDAO;
+    private LevelDAO levelDAO;
+    private Player player;
 
     public GameProcess(GameDAO gameDAO, PlayerDAO playerDAO, TrophyDAO trophyDAO) {
         this.gameDAO = gameDAO;
@@ -66,7 +70,9 @@ public class GameProcess {
         Gson gson = new Gson();
         GameProtocolRequest gcpRequest = gson.fromJson(request.getValue(), GameProtocolRequest.class);
         String idPlayer = gcpRequest.getId();
+        player = playerDAO.obter(idPlayer);
         GameProcotolOperation operation = gcpRequest.getOperation();
+        LinkedTreeMap jData = (LinkedTreeMap) gcpRequest.getData();
         switch (operation) {
             case ADD_SCORE:
                 LinkedTreeMap jScore = (LinkedTreeMap) gcpRequest.getData();
@@ -100,6 +106,18 @@ public class GameProcess {
                 code = 200;
                 data = "";
                 break;
+            case SAVE_POINT:
+                double coins = (double) jData.get("coins");
+                int life = (int) (double) jData.get("life");
+                int xp = (int) (double) jData.get("xp");
+                double sp_x = (double) jData.get("save_point_x");
+                double sp_y = (double) jData.get("save_point_y");
+                double sp_id = (double) jData.get("save_point_id");
+                Level level = new Level(coins, sp_id, sp_y, sp_id, life, xp);
+                level.setPlayerNomePlayer(player);
+                levelDAO = new LevelDAO();
+                levelDAO.insert(level);
+
             default:
                 code = 404;
                 data = "Erro, não foi possível encontrar uma solução para requisição";

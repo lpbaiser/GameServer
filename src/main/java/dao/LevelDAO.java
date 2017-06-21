@@ -3,12 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gameprotocol;
+package dao;
+
+import game.Level;
 
 /**
  *
- * @author Marco
+ * @author leonardo
  */
-public enum GameProcotolOperation {
-    ADD_TROPHY, LIST_TROPHY, CLEAR_TROPHY, ADD_PLAYER, ADD_SCORE, QUERY_PROFILE, SAVE_POINT;
+public class LevelDAO extends GenericDAO<Level> {
+
+    public LevelDAO() {
+        super(Level.class);
+    }
+
 }

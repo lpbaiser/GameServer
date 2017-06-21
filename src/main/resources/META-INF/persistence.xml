@@ -5,10 +5,7 @@
     <class>game.Game</class>
     <class>game.Level</class>
     <class>game.Player</class>
-<<<<<<< HEAD
-=======
     <class>game.PlayerHasTrophy</class>
->>>>>>> a740948f8048abf112dc3f29adface21aadf48b2
     <class>game.Trophy</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/game_server?zeroDateTimeBehavior=convertToNull"/>

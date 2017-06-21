@@ -27,7 +27,8 @@ public class GameTeste {
 
     @Test
     public void createNewGameAndNewPlayer() {
-        Player playerPO = new Player("lpbaiser");
+        Player playerPO = new Player();
+        playerPO.setNomePlayer("lpbaiser");
         playerPO.setSenha("123");
         playerPO.setIdLevelAtual(1);
         playerPO.setLife(3);
