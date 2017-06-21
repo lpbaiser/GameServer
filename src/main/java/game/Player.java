@@ -76,6 +76,10 @@ public class Player implements Serializable {
         this.idLevelAtual = idLevelAtual;
     }
 
+    public Player(String nomePlayer, String senha) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     public String getNomePlayer() {
         return nomePlayer;
     }
