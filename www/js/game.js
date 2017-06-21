@@ -5,7 +5,9 @@ class Game extends Phaser.Game {
                 'game-container', null, false, Config.ANTIALIAS)
 
         this.state.add('Play', PlayState, false)
-        this.state.start('Play')
+        //this.state.start('Play')
+        this.state.add('Title', TitleState, false)
+        this.state.start('Title')
     }
 }
 
@@ -16,11 +18,11 @@ class PlayState extends GameState {
     preload() {
         this.data = {};
         this.qtdeDied = 0;
-        this.playerX = 100;
+        this.playerX = 1500;
         this.playerY = 200;
         this.playAgain = true;
         //load map
-        this.game.load.tilemap('level1', `${dir}level1.json`, null, Phaser.Tilemap.TILED_JSON);
+        this.game.load.tilemap('level1', `${dir}level${Config.LEVEL}.json`, null, Phaser.Tilemap.TILED_JSON);
         //load images
         this.game.load.image('super_mario', `${dir}super_mario.png`);
         this.game.load.image('tiles2', `${dir}tiles2.png`);
@@ -66,7 +68,7 @@ class PlayState extends GameState {
         this.mapLayer = this.map.createLayer('Tile Layer 1')
         // os indices sao os mesmos para o tiles no Tiled Editor, acrescidos em 1
 //        this.map.setCollisionBetween(40, 40, true, 'Tile Layer 1')
-        this.map.setCollision([14, 15, 16, 22, 23, 24, 40, 27, 28], true, 'Tile Layer 1')
+        this.map.setCollision([14, 15, 16, 22, 23, 40, 27, 28], true, 'Tile Layer 1')
         this.mapLayer.resizeWorld()
 
         // para cada nova camada: criar camada e definir tiles com colisao
@@ -92,14 +94,16 @@ class PlayState extends GameState {
     }
 
     createEnemies() {
-        this.enemies = this.game.add.group();
+        this.enemie = this.game.add.group();
         //this.map.setCollision(15, true, 'Enemies Layer')
-        this.map.createFromObjects('Enemies Layer', 208, 'enemies', 0, true, false, this.enemies, Enemy);
+        this.map.createFromObjects('Enemies Layer', 208, 'enemies', 0, true, false, this.enemie, Enemy);
+        this.enemie.forEach( (enemies) => enemies.start());
     }
 
     createFlower() {
         this.flower = this.game.add.group();
         this.map.createFromObjects('Enemies Layer', 220, 'flowers', 0, true, false, this.flower, Flower);
+        //this.flower.forEach( (flowers) => flowers.start() ) 
     }
 
     createCheckPoints() {
@@ -121,27 +125,23 @@ class PlayState extends GameState {
         this.coinsText = this.game.add.text(16, 10, '', {fontSize: "16px", fill: '#ffee00'});
         this.coinsText.text = "COINS: 0";
         this.coinsText.fixedToCamera = true;
-    }
 
-    cretateHudLife() {
-        this.lifeText = this.game.add.text(100, 10, '', {fontSize: "16px", fill: '#0dbf03'});
+        this.lifeText = this.game.add.text(100, 10, '', {fontSize: "16px", fill: '#086003'});
         this.lifeText.text = "LIFE: " + this.life;
         this.lifeText.fixedToCamera = true;
-    }
 
-    cretateHudMute() {
         this.muteText = this.game.add.text(790, 10, '', {fontSize: "16px", fill: '#ffffff'});
         this.muteText.text = "SOUND: ON"
         this.muteText.fixedToCamera = true;
-    }
 
-    cretateHudXP() {
         this.xpText = this.game.add.text(170, 10, '', {fontSize: "16px", fill: '#0222bf'});
         this.xpText.text = "XP: " + this.xp;
         this.xpText.fixedToCamera = true;
-    }
+        
+        this.levelText = this.game.add.text(230, 10, '', {fontSize: "16px", fill: '#07f2ff'});
+        this.levelText.text = "LEVEL: " + Config.LEVEL;
+        this.levelText.fixedToCamera = true;
 
-    cretateHudPause() {
         this.pauseText = this.game.add.text(420, 154, '', {fontSize: "32px", fill: '#e50909'});
         this.pauseText.text = ""
         this.pauseText.fixedToCamera = true;
@@ -215,6 +215,7 @@ class PlayState extends GameState {
         let muteButton = this.game.input.keyboard.addKey(Phaser.Keyboard.M)
         muteButton.onDown.add(this.muteGame, this)
 
+
         this.createMap()
         this.createPlayer()
         this.createCoins() // deve ser apos o createMap()
@@ -223,13 +224,12 @@ class PlayState extends GameState {
         this.createMush() // deve ser apos o createMap()
         this.createCheckPoints() // deve ser apos o createMap()
         this.cretateHud()
-        this.cretateHudLife()
-        this.cretateHudMute()
-        this.cretateHudPause()
-        this.cretateHudXP()
-        //this.createFinalyPhase()
         this.trophy = new Trophy(this.game)
         this.game.add.existing(this.trophy)
+        this.game.camera.flash(0x000000, 1000)
+        // ao passar sobre o tile da bandeira -> troca de level
+        this.map.setTileIndexCallback(39, this.loadNextLevel, this)
+        this.levelCleared = false
     }
 
     takeScreenShot() {
@@ -276,10 +276,10 @@ class PlayState extends GameState {
         // colisao do player com a camada de armadilhas
         this.game.physics.arcade.collide(this.player, this.trapsLayer, this.playerDied, null, this)
 
-        this.game.physics.arcade.collide(this.mapLayer, this.enemies);
+        this.game.physics.arcade.collide(this.mapLayer, this.enemie);
         this.game.physics.arcade.collide(this.mapLayer, this.flower);
         //  this.game.physics.arcade.collide(this.player, this.enemies, this.killEnemies, null, this)
-        this.game.physics.arcade.overlap(this.player, this.enemies, this.touchEnemies, null, this)
+        this.game.physics.arcade.overlap(this.player, this.enemie, this.touchEnemies, null, this)
         this.game.physics.arcade.overlap(this.player, this.flower, this.playerDied, null, this)
 
 
@@ -331,7 +331,6 @@ class PlayState extends GameState {
         //this.trophy.show('first death')   
     }
 
-
     collectCheckPoint(player, checkPoint) {
         this.savePoint = this.game.add.audio('mario-save-point');
         this.savePoint.play();
@@ -343,7 +342,7 @@ class PlayState extends GameState {
     saveCheckpoint() {
         this.playerX = this.player.x;
         this.playerY = this.player.y;
-        
+
         let data = {
             coins: this.amountCoins,
             life: this.life,
@@ -352,16 +351,15 @@ class PlayState extends GameState {
             save_point_y: this.playerY,
             save_point_id: 1
         };
-        
+
         console.log(data);
-        
+
 
 //        this.sendCoins();
         //console.log(this.playerX)
         //console.log(this.playerY)
         ServerComm.addSavePoint(data, response => this.onServerResponse(response));
     }
-
 
     onServerResponse(response) {
         console.log(response)
@@ -400,12 +398,32 @@ class PlayState extends GameState {
         this.player.y = this.playerY
         setTimeout(this.setPlayMusic.bind(this), 2000);
         this.camera.shake(0.001, 300)
-        this.enemies.destroy()
+        this.enemie.destroy()
         this.createEnemies()
     }
 
     setPlayMusic() {
         this.music.play();
+    }
+
+    loadNextLevel() {
+        if (!this.levelCleared) {
+            this.levelCleared = true
+            this.game.camera.fade(0x000000, 1000)
+            this.game.camera.onFadeComplete.add(this.changeLevel, this)
+        }
+    }
+
+    changeLevel() {
+        Config.LEVEL += 1
+        Config.COINS = this.amountCoins
+        Config.LIFE = this.life
+        Config.XP = this.xp
+        this.game.camera.onFadeComplete.removeAll(this)// bug
+        if (Config.LEVEL <= 2)
+            this.game.state.restart()
+        else
+            this.game.state.start('Title')
     }
 
     render() {

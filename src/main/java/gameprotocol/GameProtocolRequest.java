@@ -11,17 +11,17 @@ package gameprotocol;
  */
 public class GameProtocolRequest {
 
-    private final int id;
+    private final String id;
     private final String op;
     private Object data;
 
-    public GameProtocolRequest(int id, GameProcotolOperation op, Object data) {
+    public GameProtocolRequest(String id, GameProcotolOperation op, Object data) {
         this.id = id;
         this.op = op.name();
         this.data = data;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
