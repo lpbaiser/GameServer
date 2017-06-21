@@ -7,6 +7,7 @@ package httpserver;
 
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
+import controller.PlayerController;
 import dao.GameDAO;
 import dao.PlayerDAO;
 import dao.TrophyDAO;
@@ -32,12 +33,15 @@ public class GameProcess {
 
     private Game game;
     private final GameDAO gameDAO;
+    private final PlayerController playerController;
     private final PlayerDAO playerDAO;
     private final TrophyDAO trophyDAO;
 
     public GameProcess(GameDAO gameDAO, PlayerDAO playerDAO, TrophyDAO trophyDAO) {
-        this.gameDAO = new GameDAO();
-        this.playerDAO = new PlayerDAO();
+        this.gameDAO = gameDAO;
+        this.playerDAO = playerDAO;
+        this.playerController = new PlayerController();
+
         this.trophyDAO = new TrophyDAO();
     }
 
@@ -66,12 +70,10 @@ public class GameProcess {
         switch (operation) {
             case ADD_SCORE:
                 LinkedTreeMap jScore = (LinkedTreeMap) gcpRequest.getData();
-                Double score = (Double) jScore.get("score");
-                Player player = playerDAO.obter(idPlayer);
-                //player.updateScore(score);
-                playerDAO.update(player);
+                double score = (Double) jScore.get("score");
+                double newScore = playerController.updateScore(score, idPlayer);
                 code = 200;
-                data = "Pontuação Adicionada: " + score;
+                data = "Pontuação Adicionada: " + newScore;
                 break;
             case ADD_TROPHY:
                 LinkedTreeMap objectTrophy = (LinkedTreeMap) gcpRequest.getData();
@@ -82,9 +84,9 @@ public class GameProcess {
                 data = "";
                 break;
             case LIST_TROPHY:
-//                ArrayList<Trophy> trophies = (ArrayList) player.getTrophyList();
+                ArrayList<Trophy> trophies = (ArrayList) playerController.getPlayerById(gcpRequest.getId()).getTrophyList();
                 code = 200;
-//                data = gson.toJson(trophies);
+                data = gson.toJson(trophies);
                 break;
             case CLEAR_TROPHY:
                 break;

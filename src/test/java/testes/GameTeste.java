@@ -8,10 +8,9 @@ package testes;
 import com.google.gson.Gson;
 import dao.GameDAO;
 import dao.PlayerDAO;
-import dao.TrophyDAO;
 import game.Game;
+import game.Level;
 import game.Player;
-import game.Trophy;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Assert;
@@ -28,11 +27,10 @@ public class GameTeste {
 
     @Test
     public void createNewGameAndNewPlayer() {
-        Player playerPO = new Player();
-        playerPO.setNomePlayer("Marco");
-        playerPO.setSenha("123");
-        playerPO.setIdLevelAtual(1);
-        playerPO.setLife(3);
+        List<Level> levels = new ArrayList<>();
+        Level level = new Level(0, 0, 0, 0, 0);
+        levels.add(level);
+        Player playerPO = new Player(0, "Marco", "123", 3, 1, levels);
 
         Game gamePO = new Game(1);
         Game gamePO1;
@@ -43,7 +41,7 @@ public class GameTeste {
 
         GameDAO gameDAO = new GameDAO();
         gameDAO.insert(gamePO);
-        gamePO1 = gameDAO.obter(1);
+        gamePO1 = gameDAO.obter(0);
         Assert.assertEquals(gamePO.getPlayerIdPlayer().getNomePlayer(), gamePO1.getPlayerIdPlayer().getNomePlayer());
     }
 
@@ -62,7 +60,7 @@ public class GameTeste {
         List<Player> players = playerDAO.list();
         ArrayList<Player> list = new ArrayList<Player>();
         for (Player player : players) {
-            Player p = new Player(player.getIdPlayer(), player.getNomePlayer(), player.getSenha());
+            Player p = new Player(player.getIdPlayer(), player.getNomePlayer(), player.getSenha(), player.getLife(), player.getIdLevelAtual(), player.getLevelList());
             list.add(p);
         }
 //        System.out.println("ID: "+ list.iterator().next().getIdPlayer());
@@ -80,5 +78,4 @@ public class GameTeste {
 //        trophyDAO.insert(trophy);
 //
 //    }
-
 }

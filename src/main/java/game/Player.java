@@ -68,25 +68,14 @@ public class Player implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "playerIdPlayer")
     private List<Level> levelList;
 
-    public Player() {
-    }
 
-    public Player(Integer idPlayer) {
-        this.idPlayer = idPlayer;
-    }
-
-    public Player(Integer idPlayer, String nomePlayer, String senha, double life, int idLevelAtual) {
+    public Player(Integer idPlayer, String nomePlayer, String senha, double life, int idLevelAtual, List<Level> levels) {
         this.idPlayer = idPlayer;
         this.nomePlayer = nomePlayer;
         this.senha = senha;
         this.life = life;
         this.idLevelAtual = idLevelAtual;
-    }
-
-    public Player(Integer idPlayer, String nomePlayer, String senha) {
-        this.idPlayer = idPlayer;
-        this.nomePlayer = nomePlayer;
-        this.senha = senha;
+        this.levelList = levels;
     }
 
     public Integer getIdPlayer() {
