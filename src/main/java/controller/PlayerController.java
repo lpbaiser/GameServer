@@ -43,7 +43,7 @@ public class PlayerController {
         return list;
     }
 
-    public double updateScore(double newScore, int idPlayer) {
+    public double updateScore(double newScore, String idPlayer) {
         Player player = playerDAO.obter(idPlayer);
         List<Level> levelList = player.getLevelList();
 //        Não tem o level add ainda
