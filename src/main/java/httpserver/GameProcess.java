@@ -65,7 +65,7 @@ public class GameProcess {
         int code = 500;
         Gson gson = new Gson();
         GameProtocolRequest gcpRequest = gson.fromJson(request.getValue(), GameProtocolRequest.class);
-        int idPlayer = gcpRequest.getId();
+        String idPlayer = gcpRequest.getId();
         GameProcotolOperation operation = gcpRequest.getOperation();
         switch (operation) {
             case ADD_SCORE:
@@ -93,6 +93,10 @@ public class GameProcess {
             case CLEAR_TROPHY:
                 break;
             case ADD_PLAYER:
+                code = 200;
+                data = "";
+                break;
+            case QUERY_PROFILE:
                 code = 200;
                 data = "";
                 break;

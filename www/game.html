@@ -21,14 +21,19 @@
             <!-- form de login -->
             <form class="navbar-form navbar-left" id="form-login">
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Username">
-                    <input type="password" class="form-control" placeholder="Password">
+                    <input type="text" class="form-control" placeholder="Username" name="usuario">
+                    <input type="password" class="form-control" placeholder="Password" name="senha">
                 </div>
-                <button type="button" class="btn btn-primary" id="form-login-button">
+                <button type="button" onclick="login()" class="btn btn-primary" id="form-login-button">
                     <span class="glyphicon glyphicon-log-in"></span>
                     Login
                 </button>
             </form>
+
+            <div class="nav navbar-nav" id="label-erro-login" 
+                 style="display: none; padding-top: 15px; color: red">
+                Digite um login e senha válidos!
+            </div>
 
             <!-- informacao apos o login -->
             <div class="nav navbar-nav" id="label-logged-in" 
@@ -148,6 +153,36 @@
         </li>
     </script>
 
+    <script>
+        function login() {
+            let usuario = document.getElementsByName('usuario')[0].value;
+            let senha = document.getElementsByName('senha')[0].value;
+            if (usuario && senha) {
+
+                usuario = usuario.toLowerCase();
+                senha = senha.toLowerCase();
+                let data = {
+                    id: usuario,
+                    op: 'query_profile',
+                    data: {
+                        password: senha
+                    }
+                }
+                ServerComm.login(data, function (response) {
+                    if (response['response'] != 'ok') {
+                        document.getElementById("label-erro-login").style.display = "block";
+                        document.getElementById("label-erro-login").value = "Usuário ou senha inválidos.";
+                        return
+                    }else{
+                        Config.USER_ID = usuario;
+                    }
+                });
+            } else {
+                document.getElementById("label-erro-login").style.display = "block";
+            }
+        }
+    </script>
+
     <!-- INCLUDES DAS LIBS -->
 
     <link rel="stylesheet" href="bootstrap-3.3.7-dist/css/bootstrap.css">
@@ -159,6 +194,7 @@
 
     <!-- INCLUDES DO JOGO -->
 
+    <script src="js/config.js"></script>
     <script src="js/gamestate.js"></script>
     <script src="js/player.js"></script>
     <script src="js/trophy.js"></script>

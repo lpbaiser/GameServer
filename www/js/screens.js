@@ -4,8 +4,7 @@
 class TitleState extends GameState {
     preload() {
         let dir = Config.ASSETS
-        this.game.load.image('title',`${dir}title.png`); 
-        console.log('TITLE SCREEN') 
+        this.game.load.image('title',`${dir}mario_trap.png`); 
     }
 
     create() {
@@ -17,8 +16,8 @@ class TitleState extends GameState {
         this.imgTitle.y = 150
 
         this.pressStart = this.game.add.text(0, 0,
-            'Press ENTER to begin' ,
-             {fontSize: '16px', fill: '#ffffff'} )
+            'Press ENTER to START' ,
+             {fontSize: '16px', fill: '#e80202'} )
         this.pressStart.anchor.setTo(0.5, 0.5)
         this.pressStart.x = this.game.width/2
         this.pressStart.y = 300
