@@ -11,12 +11,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -36,10 +31,6 @@ public class Player implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id_player")
-    private Integer idPlayer;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 45)
@@ -58,32 +49,27 @@ public class Player implements Serializable {
     @NotNull
     @Column(name = "id_level_atual")
     private int idLevelAtual;
-    @JoinTable(name = "player_has_trophy", joinColumns = {
-        @JoinColumn(name = "player_id_player", referencedColumnName = "id_player")}, inverseJoinColumns = {
-        @JoinColumn(name = "trophy_id_trophy", referencedColumnName = "id_trophy")})
-    @ManyToMany
-    private List<Trophy> trophyList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "playerIdPlayer")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "playerNomePlayer")
     private List<Game> gameList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "playerIdPlayer")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "playerNomePlayer")
     private List<Level> levelList;
 
 
-    public Player(Integer idPlayer, String nomePlayer, String senha, double life, int idLevelAtual, List<Level> levels) {
-        this.idPlayer = idPlayer;
+
+    public Player(String nomePlayer, String senha) {
+        this.nomePlayer = nomePlayer;
+        this.senha = senha;
+    }
+
+    public Player(String nomePlayer) {
+        this.nomePlayer = nomePlayer;
+    }
+
+    public Player(String nomePlayer, String senha, double life, int idLevelAtual) {
         this.nomePlayer = nomePlayer;
         this.senha = senha;
         this.life = life;
         this.idLevelAtual = idLevelAtual;
-        this.levelList = levels;
-    }
-
-    public Integer getIdPlayer() {
-        return idPlayer;
-    }
-
-    public void setIdPlayer(Integer idPlayer) {
-        this.idPlayer = idPlayer;
     }
 
     public String getNomePlayer() {
@@ -118,14 +104,6 @@ public class Player implements Serializable {
         this.idLevelAtual = idLevelAtual;
     }
 
-    public List<Trophy> getTrophyList() {
-        return trophyList;
-    }
-
-    public void setTrophyList(List<Trophy> trophyList) {
-        this.trophyList = trophyList;
-    }
-
     public List<Game> getGameList() {
         return gameList;
     }
@@ -145,7 +123,7 @@ public class Player implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idPlayer != null ? idPlayer.hashCode() : 0);
+        hash += (nomePlayer != null ? nomePlayer.hashCode() : 0);
         return hash;
     }
 
@@ -156,7 +134,7 @@ public class Player implements Serializable {
             return false;
         }
         Player other = (Player) object;
-        if ((this.idPlayer == null && other.idPlayer != null) || (this.idPlayer != null && !this.idPlayer.equals(other.idPlayer))) {
+        if ((this.nomePlayer == null && other.nomePlayer != null) || (this.nomePlayer != null && !this.nomePlayer.equals(other.nomePlayer))) {
             return false;
         }
         return true;
@@ -164,7 +142,7 @@ public class Player implements Serializable {
 
     @Override
     public String toString() {
-        return "game.Player[ idPlayer=" + idPlayer + " ]";
+        return "game.Player[ nomePlayer=" + nomePlayer + " ]";
     }
 
 }

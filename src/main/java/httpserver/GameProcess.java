@@ -84,9 +84,11 @@ public class GameProcess {
                 data = "";
                 break;
             case LIST_TROPHY:
-                ArrayList<Trophy> trophies = (ArrayList) playerController.getPlayerById(gcpRequest.getId()).getTrophyList();
+//                ArrayList<Trophy> trophies = (ArrayList) playerController.getPlayerById(gcpRequest.getId()).getTrophyList();
+//                ArrayList<Trophy> trophies = (ArrayList) playerController.getPlayerById("a");
+
                 code = 200;
-                data = gson.toJson(trophies);
+//                data = gson.toJson(trophies);
                 break;
             case CLEAR_TROPHY:
                 break;

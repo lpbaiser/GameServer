@@ -27,22 +27,22 @@ public class GameTeste {
 
     @Test
     public void createNewGameAndNewPlayer() {
-        List<Level> levels = new ArrayList<>();
-        Level level = new Level(0, 0, 0, 0, 0);
-        levels.add(level);
-        Player playerPO = new Player(0, "Marco", "123", 3, 1, levels);
+        Player playerPO = new Player("lpbaiser");
+        playerPO.setSenha("123");
+        playerPO.setIdLevelAtual(1);
+        playerPO.setLife(3);
 
         Game gamePO = new Game(1);
         Game gamePO1;
-        gamePO.setPlayerIdPlayer(playerPO);
+        gamePO.setPlayerNomePlayer(playerPO);
 
         PlayerDAO playerDAO = new PlayerDAO();
         playerDAO.insert(playerPO);
 
         GameDAO gameDAO = new GameDAO();
         gameDAO.insert(gamePO);
-        gamePO1 = gameDAO.obter(0);
-        Assert.assertEquals(gamePO.getPlayerIdPlayer().getNomePlayer(), gamePO1.getPlayerIdPlayer().getNomePlayer());
+        gamePO1 = gameDAO.obter(1);
+        Assert.assertEquals(gamePO.getPlayerNomePlayer(), gamePO1.getPlayerNomePlayer());
     }
 
     //@Test
@@ -60,7 +60,7 @@ public class GameTeste {
         List<Player> players = playerDAO.list();
         ArrayList<Player> list = new ArrayList<Player>();
         for (Player player : players) {
-            Player p = new Player(player.getIdPlayer(), player.getNomePlayer(), player.getSenha(), player.getLife(), player.getIdLevelAtual(), player.getLevelList());
+            Player p = new Player(player.getNomePlayer(), player.getSenha(), player.getLife(), player.getIdLevelAtual());
             list.add(p);
         }
 //        System.out.println("ID: "+ list.iterator().next().getIdPlayer());
