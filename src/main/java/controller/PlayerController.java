@@ -6,7 +6,9 @@
 package controller;
 
 import dao.PlayerDAO;
+import game.Level;
 import game.Player;
+import game.Trophy;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +21,7 @@ public class PlayerController {
     PlayerDAO playerDAO;
 
     public PlayerController() {
-        playerDAO = new PlayerDAO();
+        this.playerDAO = new PlayerDAO();
     }
 
     public Player getPlayerById(String id) {
@@ -41,4 +43,20 @@ public class PlayerController {
         return list;
     }
 
+    public double updateScore(double newScore, String idPlayer) {
+        Player player = playerDAO.obter(idPlayer);
+        List<Level> levelList = player.getLevelList();
+//        Não tem o level add ainda
+        Level level = levelList.get(player.getIdLevelAtual());
+        double score = level.getCoins();
+        if (newScore > score) {
+            level.setCoins(newScore);
+        } else {
+            newScore = score;
+        }
+        levelList.set(player.getIdLevelAtual(), level);
+        player.setLevelList(levelList);
+        playerDAO.update(player);
+        return newScore;
+    }
 }

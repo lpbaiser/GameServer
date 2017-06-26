@@ -12,6 +12,9 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -21,7 +24,7 @@ import javax.validation.constraints.Size;
 
 /**
  *
- * @author leonardo
+ * @author marco
  */
 @Entity
 @Table(name = "player")
@@ -49,17 +52,17 @@ public class Player implements Serializable {
     @NotNull
     @Column(name = "id_level_atual")
     private int idLevelAtual;
+    @JoinTable(name = "player_has_trophy", joinColumns = {
+        @JoinColumn(name = "player_nome_player", referencedColumnName = "nome_player")}, inverseJoinColumns = {
+        @JoinColumn(name = "trophy_id_trophy", referencedColumnName = "id_trophy")})
+    @ManyToMany
+    private List<Trophy> trophyList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "playerNomePlayer")
     private List<Game> gameList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "playerNomePlayer")
     private List<Level> levelList;
 
     public Player() {
-    }
-
-    public Player(String nomePlayer, String senha) {
-        this.nomePlayer = nomePlayer;
-        this.senha = senha;
     }
 
     public Player(String nomePlayer) {
@@ -71,6 +74,10 @@ public class Player implements Serializable {
         this.senha = senha;
         this.life = life;
         this.idLevelAtual = idLevelAtual;
+    }
+
+    public Player(String nomePlayer, String senha) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public String getNomePlayer() {
@@ -103,6 +110,14 @@ public class Player implements Serializable {
 
     public void setIdLevelAtual(int idLevelAtual) {
         this.idLevelAtual = idLevelAtual;
+    }
+
+    public List<Trophy> getTrophyList() {
+        return trophyList;
+    }
+
+    public void setTrophyList(List<Trophy> trophyList) {
+        this.trophyList = trophyList;
     }
 
     public List<Game> getGameList() {
@@ -145,5 +160,5 @@ public class Player implements Serializable {
     public String toString() {
         return "game.Player[ nomePlayer=" + nomePlayer + " ]";
     }
-
+    
 }

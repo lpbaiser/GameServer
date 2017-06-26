@@ -8,22 +8,21 @@ package game;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
  *
- * @author leonardo
+ * @author marco
  */
 @Entity
 @Table(name = "trophy")
@@ -56,8 +55,8 @@ public class Trophy implements Serializable {
     @Size(min = 1, max = 140)
     @Column(name = "description_trophy")
     private String descriptionTrophy;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "trophy")
-    private List<PlayerHasTrophy> playerHasTrophyList;
+    @ManyToMany(mappedBy = "trophyList")
+    private List<Player> playerList;
 
     public Trophy() {
     }
@@ -114,12 +113,12 @@ public class Trophy implements Serializable {
         this.descriptionTrophy = descriptionTrophy;
     }
 
-    public List<PlayerHasTrophy> getPlayerHasTrophyList() {
-        return playerHasTrophyList;
+    public List<Player> getPlayerList() {
+        return playerList;
     }
 
-    public void setPlayerHasTrophyList(List<PlayerHasTrophy> playerHasTrophyList) {
-        this.playerHasTrophyList = playerHasTrophyList;
+    public void setPlayerList(List<Player> playerList) {
+        this.playerList = playerList;
     }
 
     @Override

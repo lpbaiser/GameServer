@@ -7,10 +7,13 @@ package httpserver;
 
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
+import controller.PlayerController;
 import dao.GameDAO;
+import dao.LevelDAO;
 import dao.PlayerDAO;
 import dao.TrophyDAO;
 import game.Game;
+import game.Level;
 import game.Player;
 import game.Trophy;
 import gameprotocol.GameProcotolOperation;
@@ -32,12 +35,17 @@ public class GameProcess {
 
     private Game game;
     private final GameDAO gameDAO;
+    private final PlayerController playerController;
     private final PlayerDAO playerDAO;
     private final TrophyDAO trophyDAO;
+    private LevelDAO levelDAO;
+    private Player player;
 
     public GameProcess(GameDAO gameDAO, PlayerDAO playerDAO, TrophyDAO trophyDAO) {
-        this.gameDAO = new GameDAO();
-        this.playerDAO = new PlayerDAO();
+        this.gameDAO = gameDAO;
+        this.playerDAO = playerDAO;
+        this.playerController = new PlayerController();
+
         this.trophyDAO = new TrophyDAO();
     }
 
@@ -62,16 +70,16 @@ public class GameProcess {
         Gson gson = new Gson();
         GameProtocolRequest gcpRequest = gson.fromJson(request.getValue(), GameProtocolRequest.class);
         String idPlayer = gcpRequest.getId();
+        player = playerDAO.obter(idPlayer);
         GameProcotolOperation operation = gcpRequest.getOperation();
+        LinkedTreeMap jData = (LinkedTreeMap) gcpRequest.getData();
         switch (operation) {
             case ADD_SCORE:
                 LinkedTreeMap jScore = (LinkedTreeMap) gcpRequest.getData();
-                Double score = (Double) jScore.get("score");
-                Player player = playerDAO.obter(idPlayer);
-                //player.updateScore(score);
-                playerDAO.update(player);
+                double score = (Double) jScore.get("score");
+                double newScore = playerController.updateScore(score, idPlayer);
                 code = 200;
-                data = "Pontuação Adicionada: " + score;
+                data = "Pontuação Adicionada: " + newScore;
                 break;
             case ADD_TROPHY:
                 LinkedTreeMap objectTrophy = (LinkedTreeMap) gcpRequest.getData();
@@ -82,7 +90,9 @@ public class GameProcess {
                 data = "";
                 break;
             case LIST_TROPHY:
-//                ArrayList<Trophy> trophies = (ArrayList) player.getTrophyList();
+//                ArrayList<Trophy> trophies = (ArrayList) playerController.getPlayerById(gcpRequest.getId()).getTrophyList();
+//                ArrayList<Trophy> trophies = (ArrayList) playerController.getPlayerById("a");
+
                 code = 200;
 //                data = gson.toJson(trophies);
                 break;
@@ -96,6 +106,18 @@ public class GameProcess {
                 code = 200;
                 data = "";
                 break;
+            case SAVE_POINT:
+                double coins = (double) jData.get("coins");
+                int life = (int) (double) jData.get("life");
+                int xp = (int) (double) jData.get("xp");
+                double sp_x = (double) jData.get("save_point_x");
+                double sp_y = (double) jData.get("save_point_y");
+                double sp_id = (double) jData.get("save_point_id");
+                Level level = new Level(coins, sp_id, sp_y, sp_id, life, xp);
+                level.setPlayerNomePlayer(player);
+                levelDAO = new LevelDAO();
+                levelDAO.insert(level);
+
             default:
                 code = 404;
                 data = "Erro, não foi possível encontrar uma solução para requisição";

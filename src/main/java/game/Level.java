@@ -9,6 +9,8 @@ import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -19,7 +21,7 @@ import javax.validation.constraints.NotNull;
 
 /**
  *
- * @author leonardo
+ * @author marco
  */
 @Entity
 @Table(name = "level")
@@ -29,8 +31,8 @@ public class Level implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @NotNull
     @Column(name = "id_level")
     private Integer idLevel;
     @Basic(optional = false)
@@ -52,11 +54,11 @@ public class Level implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "life")
-    private int life;
+    private double life;
     @Basic(optional = false)
     @NotNull
     @Column(name = "xp")
-    private int xp;
+    private double xp;
     @JoinColumn(name = "player_nome_player", referencedColumnName = "nome_player")
     @ManyToOne(optional = false)
     private Player playerNomePlayer;
@@ -68,8 +70,7 @@ public class Level implements Serializable {
         this.idLevel = idLevel;
     }
 
-    public Level(Integer idLevel, double coins, double savePointX, double savePontY, double savePointId, int life, int xp) {
-        this.idLevel = idLevel;
+    public Level(double coins, double savePointX, double savePontY, double savePointId, double life, double xp) {
         this.coins = coins;
         this.savePointX = savePointX;
         this.savePontY = savePontY;
@@ -118,19 +119,19 @@ public class Level implements Serializable {
         this.savePointId = savePointId;
     }
 
-    public int getLife() {
+    public double getLife() {
         return life;
     }
 
-    public void setLife(int life) {
+    public void setLife(double life) {
         this.life = life;
     }
 
-    public int getXp() {
+    public double getXp() {
         return xp;
     }
 
-    public void setXp(int xp) {
+    public void setXp(double xp) {
         this.xp = xp;
     }
 
