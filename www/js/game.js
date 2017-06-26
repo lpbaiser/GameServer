@@ -1,10 +1,11 @@
-
 class Game extends Phaser.Game {
     constructor() {
         super(Config.WIDTH, Config.HEIGHT, Phaser.CANVAS,
                 'game-container', null, false, Config.ANTIALIAS)
 
         this.state.add('Play', PlayState, false)
+        this.state.add('GameOver', GameOver, false)
+        this.state.add('YouWin', YouWin, false)
         //this.state.start('Play')
         this.state.add('Title', TitleState, false)
         this.state.start('Title')
@@ -18,7 +19,7 @@ class PlayState extends GameState {
     preload() {
         this.data = {};
         this.qtdeDied = 0;
-        this.playerX = 1500;
+        this.playerX = 100;
         this.playerY = 200;
         this.playAgain = true;
         //load map
@@ -26,14 +27,21 @@ class PlayState extends GameState {
         //load images
         this.game.load.image('super_mario', `${dir}super_mario.png`);
         this.game.load.image('tiles2', `${dir}tiles2.png`);
+        this.game.load.image('mario_tileset', `${dir}mario_tileset.png`);
         this.game.load.image('background', `${dir}background3.png`);
+        this.game.load.image('bg_map4', `${dir}bg_map4.png`);
         this.game.load.image('trophy', `${dir}trophy-200x64.png`);
+        this.game.load.image('trap1', `${dir}trap1.png`);
         //load sprites
-        this.game.load.spritesheet('mario', `${dir}mario2.png`, 24, 36);
+        this.game.load.spritesheet('floorMove', `${dir}floor_move.png`, 16, 48);
+        this.game.load.spritesheet('questionMark', `${dir}questionMark.png`, 16, 16);
+        this.game.load.spritesheet('bullet', `${dir}fire_mario.png`, 8, 8);
         this.game.load.spritesheet('coin', `${dir}coin2.png`, 16, 16);
+        this.game.load.spritesheet('mario', `${dir}mario3.png`, 24, 36);
         this.game.load.spritesheet('mush', `${dir}mush.png`, 16, 16);
         this.game.load.spritesheet('enemies', `${dir}enemies2.png`, 16, 32);
-        this.game.load.spritesheet('flowers', `${dir}enemies2.png`, 16, 32);
+        this.game.load.spritesheet('monsters', `${dir}enemies2.png`, 16, 32);
+        this.game.load.spritesheet('flower', `${dir}enemies2.png`, 16, 32);
         this.game.load.spritesheet('check-point', `${dir}check_point_29x32.png`, 29, 32);
         //load sounds
         this.game.load.audio('mario_main', ['assets/audio/main-theme-overworld.mp3']);
@@ -45,7 +53,7 @@ class PlayState extends GameState {
     }
 
     createPlayer() {
-        this.player = new Player(this.game, this.keys, this.playerX, this.playerY, 'mario')
+        this.player = new Player(this.game, this.keys, this.playerX, this.playerY, 'mario', this.weapon)
         this.game.add.existing(this.player)
 
         // camera seca
@@ -63,21 +71,21 @@ class PlayState extends GameState {
         // corresponde ao nome usado para o tileset dentro do Tiled Editor
         this.map.addTilesetImage('super_mario')
         this.map.addTilesetImage('tiles2')
+        this.map.addTilesetImage('mario_tileset')
+        this.map.addTilesetImage('trap1')
 
         // deve ter o mesmo nome usado na camada criada no Tiled Editor
-        this.mapLayer = this.map.createLayer('Tile Layer 1')
+        this.mapLayer = this.map.createLayer('TileMap')
         // os indices sao os mesmos para o tiles no Tiled Editor, acrescidos em 1
-//        this.map.setCollisionBetween(40, 40, true, 'Tile Layer 1')
-        this.map.setCollision([14, 15, 16, 22, 23, 40, 27, 28], true, 'Tile Layer 1')
+//        this.map.setCollisionBetween(40, 40, true, 'TileMap')
+        this.map.setCollision([15, 16, 22, 23, 40, 27, 28, 426, 499, 500, 501, 601, 429, 448, 467], true, 'TileMap')
         this.mapLayer.resizeWorld()
+
 
         // para cada nova camada: criar camada e definir tiles com colisao
         this.trapsLayer = this.map.createLayer('Traps')
-        this.map.setCollision(14, true, 'Traps')
-        this.map.setCollision(58, true, 'Traps')
-        this.map.setCollision(76, true, 'Traps')
-        this.map.setCollision(189, true, 'Traps')
-        this.map.setCollision(199, true, 'Traps')
+        this.map.setCollision([14, 58, 76, 189, 199, 645], true, 'Traps')
+
         //this.CheckpointsLayer = this.map.createLayer('Checkpoints')
         //this.map.setCollision([10], true, 'Checkpoints')
     }
@@ -85,25 +93,55 @@ class PlayState extends GameState {
     createCoins() {
         this.coins = this.game.add.group();
         // 11 eh o indice do tile
-        this.map.createFromObjects('Object Layer 1', 45, 'coin', 0, true, false, this.coins, Coin);
+        this.map.createFromObjects('Coins', 45, 'coin', 0, true, false, this.coins, Coin);
     }
 
     createMush() {
-        this.mush = this.game.add.group();
-        this.map.createFromObjects('Mush Layer', 207, 'mush', 0, true, false, this.mush, Mush);
+        this.mushs = this.game.add.group();
+        this.map.createFromObjects('Mush', 207, 'mush', 0, true, false, this.mushs, Mush);
+        //this.mushs.forEach((mushs) => mushs.start())
+    }
+
+    createQuestionMarkBlock() {
+        this.questionMarks = this.game.add.group();
+        this.map.createFromObjects('QuestionMark', 413, 'questionMark', 0, true, false, this.questionMarks, QuestionMark);
     }
 
     createEnemies() {
-        this.enemie = this.game.add.group();
-        //this.map.setCollision(15, true, 'Enemies Layer')
-        this.map.createFromObjects('Enemies Layer', 208, 'enemies', 0, true, false, this.enemie, Enemy);
-        this.enemie.forEach( (enemies) => enemies.start());
+        this.enemies = this.game.add.group();
+        //this.map.setCollision(15, true, 'Enemies')
+        this.map.createFromObjects('Enemies', 208, 'enemies', 0, true, false, this.enemies, Enemy);
+        this.enemies.forEach((enemies) => enemies.start());
     }
 
     createFlower() {
-        this.flower = this.game.add.group();
-        this.map.createFromObjects('Enemies Layer', 220, 'flowers', 0, true, false, this.flower, Flower);
-        //this.flower.forEach( (flowers) => flowers.start() ) 
+        this.flowers = this.game.add.group();
+        this.map.createFromObjects('Enemies', 220, 'flower', 0, true, false, this.flowers, Flower);
+        this.flowers.forEach((flowers) => flowers.start())
+    }
+
+    createFloorMoove() {
+        this.floors = this.game.add.group();
+        this.map.createFromObjects('FloorMove', 643, 'floorMove', 0, true, false, this.floors, FloorMove);
+        //this.map.setCollision([643], true, 'FloorMove')
+        this.floors.forEach((floors) => floors.start())
+    }
+
+    createTurtleFlyer() {
+        this.turtlesFlyer = this.game.add.group();
+        this.map.createFromObjects('Enemies', 216, 'enemies', 0, true, false, this.turtlesFlyer, TurtleFly);
+        this.turtlesFlyer.forEach((turtlesFlyer) => turtlesFlyer.start())
+    }
+
+    createTurtle() {
+        this.turtles = this.game.add.group();
+        this.map.createFromObjects('Enemies', 214, 'enemies', 0, true, false, this.turtles, Turtle);
+        this.turtles.forEach((turtles) => turtles.start())
+    }
+    createMonster() {
+        this.monsters = this.game.add.group();
+        this.map.createFromObjects('Enemies', 228, 'monsters', 0, true, false, this.monsters, Monster);
+        this.monsters.forEach((monsters) => monsters.start())
     }
 
     createCheckPoints() {
@@ -111,15 +149,20 @@ class PlayState extends GameState {
         this.map.createFromObjects('Checkpoints', 412, 'check-point', 0, true, false, this.checkPoint, CheckPoint);
     }
 
+    createFireBall() {
+        this.weapon = this.game.add.weapon(1, 'bullet');
+        this.weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
+        this.weapon.bulletAngleOffset = 90;
+        this.weapon.bulletSpeed = 450;
+        this.weapon.fireRate = 100;
+        this.weapon.trackSprite(this.player, 14, 0);
+        this.game.physics.arcade.overlap(this.weapon, this.enemies, this.killEnemies, null, this)
+        console.log("create weapon");
+    }
+
     changeMarioPlayer() {
         this.game.load.spritesheet('mario', `${dir}mario-yoshi.png`, 26, 39);
     }
-
-    /*createFinalyPhase(){
-     this.endPhase = this.game.add.group();
-     this.map.createFromObjects('Object Layer 1', 39, 'super_mario',
-     0, true, false, this.endPhase, null);
-     }*/
 
     cretateHud() {
         this.coinsText = this.game.add.text(16, 10, '', {fontSize: "16px", fill: '#ffee00'});
@@ -137,7 +180,7 @@ class PlayState extends GameState {
         this.xpText = this.game.add.text(170, 10, '', {fontSize: "16px", fill: '#0222bf'});
         this.xpText.text = "XP: " + this.xp;
         this.xpText.fixedToCamera = true;
-        
+
         this.levelText = this.game.add.text(230, 10, '', {fontSize: "16px", fill: '#07f2ff'});
         this.levelText.text = "LEVEL: " + Config.LEVEL;
         this.levelText.fixedToCamera = true;
@@ -148,22 +191,16 @@ class PlayState extends GameState {
     }
 
     setDeath() {
-        if (this.life === 1) {
-            this.gameOver();
-            return;
-        }
         this.life -= 1
         this.lifeText.text = "LIFE: " + this.life
+        if (this.life == 0) {
+            this.gameOver();
+        }
     }
 
     gameOver() {
-        if (this.playAgain === true) {
-            this.playerX = 50;
-            this.playerY = 200;
-            this.create();
-        } else {
-            console.log("Tela para login")
-        }
+        this.game.state.start('GameOver')
+
     }
 
     addCoin(amount) {
@@ -191,8 +228,13 @@ class PlayState extends GameState {
         this.game.physics.startSystem(Phaser.Physics.ARCADE)
         this.game.stage.backgroundColor = '#000000'
         //this.game.renderer.renderSession.roundPixels = true;
+        let bg;
+        if (Config.LEVEL == 3) {
+            bg = this.game.add.tileSprite(0, 0, Config.WIDTH, Config.HEIGHT, 'bg_map4')
 
-        let bg = this.game.add.tileSprite(0, 0, Config.WIDTH, Config.HEIGHT, 'background')
+        } else {
+            bg = this.game.add.tileSprite(0, 0, Config.WIDTH, Config.HEIGHT, 'background')
+        }
         bg.fixedToCamera = true
 
         this.keys = this.game.input.keyboard.createCursorKeys();
@@ -216,19 +258,33 @@ class PlayState extends GameState {
         muteButton.onDown.add(this.muteGame, this)
 
 
+
+
         this.createMap()
+        this.createQuestionMarkBlock()
+        this.createFlower() // deve ser apos o createMap()
+        this.pipeLayer = this.map.createLayer('Pipe');
+        this.map.setCollision([21, 22, 27, 28], true, 'Pipe')
+        this.createTurtleFlyer()// deve ser apos o createMap()
+        this.createTurtle()// deve ser apos o createMap()
+        this.createMonster()// deve ser apos o createMap()
+        this.createFireBall()
+        this.createEnemies() // deve ser apos o createMap()
         this.createPlayer()
         this.createCoins() // deve ser apos o createMap()
-        this.createEnemies() // deve ser apos o createMap()
-        this.createFlower() // deve ser apos o createMap()
         this.createMush() // deve ser apos o createMap()
         this.createCheckPoints() // deve ser apos o createMap()
         this.cretateHud()
+        this.createFloorMoove()
+        if (Config.LEVEL == 2) {
+        }
+
         this.trophy = new Trophy(this.game)
         this.game.add.existing(this.trophy)
         this.game.camera.flash(0x000000, 1000)
         // ao passar sobre o tile da bandeira -> troca de level
         this.map.setTileIndexCallback(39, this.loadNextLevel, this)
+        this.map.setTileIndexCallback(468, this.loadNextLevel, this)
         this.levelCleared = false
     }
 
@@ -273,26 +329,36 @@ class PlayState extends GameState {
     update() {
 // colisao do player com o mapa
         this.game.physics.arcade.collide(this.player, this.mapLayer)
+        this.game.physics.arcade.collide(this.player, this.pipeLayer)
+        this.game.physics.arcade.collide(this.player, this.floors)
         // colisao do player com a camada de armadilhas
         this.game.physics.arcade.collide(this.player, this.trapsLayer, this.playerDied, null, this)
 
-        this.game.physics.arcade.collide(this.mapLayer, this.enemie);
-        this.game.physics.arcade.collide(this.mapLayer, this.flower);
+        //this.game.physics.arcade.collide(this.mapLayer, this.enemie);
         //  this.game.physics.arcade.collide(this.player, this.enemies, this.killEnemies, null, this)
-        this.game.physics.arcade.overlap(this.player, this.enemie, this.touchEnemies, null, this)
-        this.game.physics.arcade.overlap(this.player, this.flower, this.playerDied, null, this)
+        this.game.physics.arcade.overlap(this.player, this.enemies, this.touchEnemie, null, this)
+        this.game.physics.arcade.overlap(this.player, this.turtlesFlyer, this.touchEnemie, null, this)
+        this.game.physics.arcade.overlap(this.player, this.turtles, this.touchEnemie, null, this)
+        this.game.physics.arcade.overlap(this.player, this.flowers, this.playerDied, null, this)
+        this.game.physics.arcade.overlap(this.player, this.monsters, this.playerDied, null, this)
 
 
         // colisao do player com o grupo de moedas
         this.game.physics.arcade.overlap(this.player, this.coins, this.collectCoin, null, this)
 
         // colisao do player com o cogumelo
-        this.game.physics.arcade.overlap(this.player, this.mush, this.collectMush, null, this)
+        this.game.physics.arcade.collide(this.player, this.questionMarks, this.questionMarkCollide, null, this)
+        this.game.physics.arcade.overlap(this.player, this.mushs, this.collectMush, null, this)
+        //this.game.physics.arcade.overlap(this.player, this.questionMark, this.questionMarkCollide, null, this)
 
         this.game.physics.arcade.collide(this.player, this.endPhase, this.finalyPhase, null, this)
 
         // colisao do player com o checkpoint
         this.game.physics.arcade.collide(this.player, this.checkPoint, this.collectCheckPoint, null, this)
+
+        this.game.physics.arcade.overlap(this.enemies, this.weapon, this.killEnemies, null, this)
+        //this.game.physics.arcade.collide(this.balas, this.mapLayer, this.destroiBala, null, this);
+        //game.physics.arcade.overlap(this.weapon, this.enemies, this.hitEnemy, null, this);
     }
 
     collectCoin(player, coin) {
@@ -313,22 +379,45 @@ class PlayState extends GameState {
         this.playerDied()
     }
 
-    killEnemies(player, enemies) {
+    destroiBala(bala) {
+        bala.kill();
+    }
+
+    killEnemies(balas, enemies) {
         console.log("tocou")
-        enemies.destroy()
+        enemies.kill()
+        balas.destroy()
     }
 
     collectMush(player, mush) {
-        let music_collect = this.game.add.audio('mario-collect-mush');
-        music_collect.play();
-        // destroi permanentemente o objeto
-        mush.destroy()
+        if (!(this.player.body.velocity.y < 0)) {
 
-        this.changeMarioPlayer()
-        // esconde o objeto e desliga colisao (para reuso futuro)
-        //coin.kill() 
-        this.addLife(mush.points)
-        //this.trophy.show('first death')   
+            let music_collect = this.game.add.audio('mario-collect-mush');
+            console.log("entrou")
+            music_collect.play();
+            // destroi permanentemente o objeto
+            mush.destroy()
+
+            this.changeMarioPlayer()
+            // esconde o objeto e desliga colisao (para reuso futuro)
+            //coin.kill() 
+            this.addLife(mush.points)
+            //this.trophy.show('first death')   
+        } else {
+            mush => mush.start();
+        }
+    }
+
+    questionMarkCollide(player, questionMark) {
+        if (this.player.body.velocity.y < 0) {
+            //this.mushs.forEach((mushs) => mushs.start())
+            questionMark.destroy();
+            console.log("Question Mark")
+            //this.player.body.velocity.y = -200;
+            return;
+        } else {
+            console.log("collide error")
+        }
     }
 
     collectCheckPoint(player, checkPoint) {
@@ -370,7 +459,21 @@ class PlayState extends GameState {
         console.log("OK")
     }
 
-    playerDied() {
+    touchEnemie(player, enemie) {
+        if (this.player.body.velocity.y > 0) { // kill enemies when hero is falling
+            //enemie.kill();
+            enemie.enemieKill();
+            this.player.body.velocity.y = -200;
+            return;
+        }
+        this.playerDied(player, enemie);
+        //this.player.body.velocity.y = -200;
+        //this.player.animations.play('dead');
+        //this.game.paused = true;
+
+    }
+
+    playerDied(player, enemie) {
         this.music.stop();
         let music_die = this.game.add.audio('mario-die');
         music_die.play();
@@ -391,14 +494,11 @@ class PlayState extends GameState {
             this.trophy.show('noob')
         }
         this.setDeath();
-        //this.player.position.setTo(50,200)
-//        this.player.x = 50
-//        this.player.y = 200
         this.player.x = this.playerX
         this.player.y = this.playerY
         setTimeout(this.setPlayMusic.bind(this), 2000);
         this.camera.shake(0.001, 300)
-        this.enemie.destroy()
+        this.enemies.destroy()
         this.createEnemies()
     }
 
@@ -423,7 +523,7 @@ class PlayState extends GameState {
         if (Config.LEVEL <= 2)
             this.game.state.restart()
         else
-            this.game.state.start('Title')
+            this.game.state.start('YouWin')
     }
 
     render() {
