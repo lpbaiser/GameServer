@@ -13,4 +13,4 @@ Config.LIFE = 0;
 Config.XP = 0;
 Config.DEBUG = false;
 Config.USER_ID = "";
-Config.PULO = -350;
+Config.PULO = -250;
