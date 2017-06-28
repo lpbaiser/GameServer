@@ -65,7 +65,11 @@ public class GameProcess {
     }
 
     protected GameProtocolResponse postGameResource(Request request) throws Exception {
+<<<<<<< HEAD
         Object data = null;
+=======
+        Object data;
+>>>>>>> c68787fcdaed2a139cf9c2c14d6a811331fe5ad8
         int code = 500;
         String password;
         List<Trophy> trophyList;
@@ -98,13 +102,32 @@ public class GameProcess {
                     data = "ok";
                     break;
                 case LIST_TROPHY:
-//                ArrayList<Trophy> trophies = (ArrayList) playerController.getPlayerById(gcpRequest.getId()).getTrophyList();
-//                ArrayList<Trophy> trophies = (ArrayList) playerController.getPlayerById("a");
-
+                    trophyList = player.getTrophyList();
                     code = 200;
-//                data = gson.toJson(trophies);
+                    data = gson.toJson(trophyList);
                     break;
+                case GET_TROPHY:
+                    trophyList = player.getTrophyList();
+                    String trophyName;
+                    trophyName = (String) jData.get("");
+                    for (Trophy trophy1 : trophyList) {
+                        if (trophy1.getNameTrophy().equals(trophyName)) {
+                            data = gson.toJson(trophy1);
+                            code = 200;
+                            break;
+                        }
+                    }
+                    code = 200;
+                    data = "Não encontrado";
+                    break;
+
                 case CLEAR_TROPHY:
+                    trophyList = player.getTrophyList();
+                    trophyList.clear();
+                    player.setTrophyList(trophyList);
+                    playerDAO.update(player);
+                    code = 200;
+                    data = "ok";
                     break;
                 case ADD_PLAYER:
                     code = 200;
@@ -127,7 +150,7 @@ public class GameProcess {
                     password = (String) jData.get("password");
                     if (player.getSenha().equals(password)) {
                         List<Level> levelList = player.getLevelList();
-                        if (levelList.size() == 0) {
+                        if (levelList.isEmpty()) {
                             level = new Level(0, 0, 0, 0, 0, 0);
                         } else {
                             level = levelList.get(player.getIdLevelAtual());
@@ -136,7 +159,7 @@ public class GameProcess {
                         objectList.add(level);
                         objectList.add(jPlayer);
                         trophyList = player.getTrophyList();
-//                        objectList.add(player.getTrophyList());
+                        objectList.add(trophyList);
                         code = 200;
                         data = gson.toJson(objectList);
                     } else {
