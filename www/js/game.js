@@ -222,7 +222,7 @@ class PlayState extends GameState {
     addLife(amount) {
         this.life += amount
         this.lifeText.text = "LIFE: " + this.life
-        if (life === 5) {
+        if (this.life === 5) {
             this.trophy.show('cheio vida')
         }
     }
@@ -526,7 +526,8 @@ class PlayState extends GameState {
         Config.LIFE = this.life
         Config.XP = this.xp
         this.game.camera.onFadeComplete.removeAll(this)// bug
-        if (Config.LEVEL <= 2)
+        this.saveCheckpoint();
+        if (Config.LEVEL <= 3)
             this.game.state.restart()
         else
             this.game.state.start('YouWin')

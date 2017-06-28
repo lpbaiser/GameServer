@@ -46,9 +46,9 @@ class TitleState extends GameState {
 
         this.pressed = false
         
-         setInterval(function () {
+        /* setInterval(function () {
             ServerComm.ajaxPost({}, function () {});
-        }, 1000);
+        }, 1000);*/
     }
 
     startFade() {

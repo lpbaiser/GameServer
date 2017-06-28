@@ -62,9 +62,9 @@
                     <span id="status" class="label label-success">ONLINE</span>
                 </h4>
 
-                <p id="show-login" style="display: none" class="navbar-text">Player:</p>
-                <h4 id="show-login" style="display: none" class="navbar-text">
-                    <span class="label label-primary">lpbaiser</span>
+                <p id="show-login-p" style="display: none" class="navbar-text">Player:</p>
+                <h4 id="show-login-h4" style="display: none" class="navbar-text">
+                    <span id="show-player-login" class="label label-primary">lpbaiser</span>
                 </h4>
 
             </div>
@@ -182,7 +182,17 @@
                     if (response['response'] !== '200') {
                         console.log("logado");
                         Config.USER_ID = usuario;
-                        document.getElementById("show-login").style.display = "block";
+                        document.getElementById("show-login-p").style.display = "block";
+                        document.getElementById("show-login-h4").style.display = "block";
+                        $('#show-player-login').text(usuario);
+                        
+                        console.log(response['data'])
+                        let data = response['data'];
+                        let data2 = JSON.stringify(data);
+                        console.log(data2['coins']);
+                        
+//                        console.log('data ' + response['data'])
+//                        console.log('coins ' + response['data'].coins)
                     } else {
                         console.log("nao logado");
                         document.getElementById("label-erro-login").style.display = "block";
@@ -211,7 +221,10 @@
                     if (response['response'] == '200') {
                         document.getElementById("show-login").style.display = "block";
                         Config.USER_ID = usuario;
-                        alert("Usuário cadastrado com sucesso!")
+                        document.getElementById("show-login-p").style.display = "block";
+                        document.getElementById("show-login-h4").style.display = "block";
+                        $('#show-player-login').text(usuario);
+                        alert("Player cadastrado com sucesso!")
                     } else {
                         document.getElementById("label-erro-login").style.display = "block";
                         document.getElementById("label-erro-login").value = "Usuário ou senha inválidos.";
