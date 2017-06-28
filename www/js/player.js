@@ -33,7 +33,7 @@ class Player extends Phaser.Sprite {
         this.soundJump = this.game.add.audio('mario-jump');
         if (this.jumpCount < this.jumpMax) {
             this.soundJump.play();
-            this.body.velocity.y = -250;
+            this.body.velocity.y = Config.PULO;
         }
         this.jumpCount++;
         if (this.body.onFloor()) {

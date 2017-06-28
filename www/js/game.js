@@ -235,6 +235,7 @@ class PlayState extends GameState {
         //this.game.renderer.renderSession.roundPixels = true;
         let bg;
         if (Config.LEVEL == 3) {
+            Config.PULO = -250;
             bg = this.game.add.tileSprite(0, 0, Config.WIDTH, Config.HEIGHT, 'bg_map4')
 
         } else {
