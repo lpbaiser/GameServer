@@ -220,7 +220,8 @@ class PlayState extends GameState {
     }
 
     addLife(amount) {
-        this.life += amount
+        this.life += amount;
+        Config.LIFE = this.life; 
         this.lifeText.text = "LIFE: " + this.life
         if (this.life === 5) {
             this.trophy.show('cheio vida')
@@ -249,9 +250,9 @@ class PlayState extends GameState {
 
         this.keys = this.game.input.keyboard.createCursorKeys();
         this.game.physics.arcade.gravity.y = 550;
-        this.xp = 0;
-        this.amountCoins = 0;
-        this.life = 3;
+        this.xp = Config.XP;
+        this.amountCoins = Config.COINS;
+        this.life = Config.LIFE;
 
         this.music = this.game.add.audio('mario_main');
         this.music.play();
