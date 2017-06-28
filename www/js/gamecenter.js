@@ -40,10 +40,15 @@ class ServerComm {
         let url = 'http://localhost:8000/game'
         $.post(url, JSON.stringify(data))
                 .done(function (data, status) {
+                    $('#status').addClass("label-success").removeClass("label-warning");
+                    $('#status').text("ONLINE");
+                    console.log("online")
                     let jsonObj = JSON.parse(data)
                     callback(jsonObj)
                 })
                 .fail(function (jqXHR, status, errorThrown) {
+                    $('#status').addClass("label-warning").removeClass("label-success");
+                    $('#status').text('OFFLINE');
                     console.log(status)
                     console.log('ERROR: cannot reach game server')
                 })

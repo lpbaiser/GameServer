@@ -19,7 +19,7 @@ class PlayState extends GameState {
     preload() {
         this.data = {};
         this.qtdeDied = 0;
-        this.playerX = 1800;
+        this.playerX = 100;
         this.playerY = 200;
         this.playAgain = true;
         //load map
@@ -50,6 +50,8 @@ class PlayState extends GameState {
         this.game.load.audio('mario-collect-mush', ['assets/audio/mario-collect-mush.mp3']);
         this.game.load.audio('mario-jump', ['assets/audio/mario-jump.mp3']);
         this.game.load.audio('mario-save-point', ['assets/audio/mario-save-point.mp3']);
+
+       
     }
 
     createPlayer() {
@@ -152,7 +154,7 @@ class PlayState extends GameState {
     createFireBall() {
         this.weapon = this.game.add.weapon(1, 'bullet');
         this.weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
-        this.weapon.bulletAngleOffset = 90;
+//        this.weapon.bulletAngleOffset = 90;
         this.weapon.bulletSpeed = 450;
         this.weapon.fireRate = 100;
         this.weapon.trackSprite(this.player, 14, 0);
@@ -220,7 +222,7 @@ class PlayState extends GameState {
     addLife(amount) {
         this.life += amount
         this.lifeText.text = "LIFE: " + this.life
-        if (life === 5){
+        if (life === 5) {
             this.trophy.show('cheio vida')
         }
     }
@@ -409,7 +411,7 @@ class PlayState extends GameState {
         } else {
             mush => mush.start();
         }
-        
+
     }
 
     questionMarkCollide(player, questionMark) {
@@ -501,7 +503,7 @@ class PlayState extends GameState {
         this.player.x = this.playerX
         this.player.y = this.playerY
         setTimeout(this.setPlayMusic.bind(this), 2000);
-        this.camera.shake(0.02, 200);   
+        this.camera.shake(0.02, 200);
         this.enemies.destroy()
         this.createEnemies()
     }

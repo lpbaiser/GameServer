@@ -24,8 +24,6 @@ import static gameprotocol.GameProcotolOperation.LIST_TROPHY;
 import gameprotocol.GameProtocolRequest;
 import gameprotocol.GameProtocolResponse;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -122,7 +120,7 @@ public class GameProcess {
                 data = "";
                 break;
             default:
-                code = 404;
+                code = 200;
                 data = "Erro, não foi possível encontrar uma solução para requisição";
                 throw new AssertionError(operation.name());
         }

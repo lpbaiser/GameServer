@@ -24,9 +24,13 @@
                     <input type="text" class="form-control" placeholder="Username" name="usuario">
                     <input type="password" class="form-control" placeholder="Password" name="senha">
                 </div>
-                <button type="button" onclick="login()" class="btn btn-primary" id="form-login-button">
+                <button type="button" onclick="login()" class="btn btn-success" id="form-login-button">
                     <span class="glyphicon glyphicon-log-in"></span>
                     Login
+                </button>
+                <button type="button" onclick="cadastrar()" class="btn btn-primary" id="form-login-button">
+                    <span class="glyphicon glyphicon-new-window"></span>
+                    Cadastrar
                 </button>
             </form>
 
@@ -52,11 +56,17 @@
             </div>
 
             <!-- status da conexao com game server -->
-            <div class="nav navbar-nav navbar-right">
+            <div  class="nav navbar-nav navbar-right">
                 <p class="navbar-text">Status:</p>
                 <h4 class="navbar-text">
-                    <span class="label label-success">ONLINE</span>
+                    <span id="status" class="label label-success">ONLINE</span>
                 </h4>
+
+                <p id="show-login" style="display: none" class="navbar-text">Player:</p>
+                <h4 id="show-login" style="display: none" class="navbar-text">
+                    <span class="label label-primary">lpbaiser</span>
+                </h4>
+
             </div>
 
         </div>
@@ -163,24 +173,51 @@
                 senha = senha.toLowerCase();
                 let data = {
                     id: usuario,
-                    op: 'query_profile',
+                    op: 'query-profile',
                     data: {
                         password: senha
                     }
                 }
                 ServerComm.login(data, function (response) {
-                    if (response['response'] != 'ok') {
+                    if (response['response'] != '200') {
+                        Config.USER_ID = usuario;
+                        document.getElementById("show-login").style.display = "block";
+                    } else {
                         document.getElementById("label-erro-login").style.display = "block";
                         document.getElementById("label-erro-login").value = "Usuário ou senha inválidos.";
-                        return
-                    }else{
-                        Config.USER_ID = usuario;
                     }
                 });
             } else {
                 document.getElementById("label-erro-login").style.display = "block";
             }
         }
+
+        function cadastrar() {
+            let usuario = document.getElementsByName('usuario')[0].value;
+            let senha = document.getElementsByName('senha')[0].value;
+            if (usuario && senha) {
+                usuario = usuario.toLowerCase();
+                senha = senha.toLowerCase();
+                let data = {
+                    id: usuario,
+                    op: 'add-profile',
+                    data: {
+                        password: senha
+                    }
+                }
+                ServerComm.cadastrar(data, function (response) {
+                    if (response['response'] != '200') {
+                        document.getElementById("show-login").style.display = "block";
+                        Config.USER_ID = usuario;
+                        alert("Usuário cadastrado com sucesso!")
+                    } else {
+                        document.getElementById("label-erro-login").style.display = "block";
+                        document.getElementById("label-erro-login").value = "Usuário ou senha inválidos.";
+                    }
+                });
+            }
+        }
+
     </script>
 
     <!-- INCLUDES DAS LIBS -->
