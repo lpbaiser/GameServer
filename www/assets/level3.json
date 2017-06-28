@@ -372,30 +372,6 @@
                  "y":208.090909090909
                 }, 
                 {
-                 "gid":208,
-                 "height":32,
-                 "id":171,
-                 "name":"",
-                 "properties":
-                    {
-                     "targetX":2335.91,
-                     "targetY":96.09,
-                     "time":6000
-                    },
-                 "propertytypes":
-                    {
-                     "targetX":"float",
-                     "targetY":"float",
-                     "time":"int"
-                    },
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":16,
-                 "x":2559.90909090909,
-                 "y":96.0909090909091
-                }, 
-                {
                  "gid":214,
                  "height":32,
                  "id":172,
