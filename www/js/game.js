@@ -19,7 +19,7 @@ class PlayState extends GameState {
     preload() {
         this.data = {};
         this.qtdeDied = 0;
-        this.playerX = 100;
+        this.playerX = 1800;
         this.playerY = 200;
         this.playAgain = true;
         //load map
@@ -78,7 +78,7 @@ class PlayState extends GameState {
         this.mapLayer = this.map.createLayer('TileMap')
         // os indices sao os mesmos para o tiles no Tiled Editor, acrescidos em 1
 //        this.map.setCollisionBetween(40, 40, true, 'TileMap')
-        this.map.setCollision([15, 16, 22, 23, 40, 27, 28, 426, 499, 500, 501, 601, 429, 448, 467], true, 'TileMap')
+        this.map.setCollision([15, 16, 22, 23, 40, 27, 28, 426, 499, 500, 501, 601, 429, 448, 467, 423], true, 'TileMap')
         this.mapLayer.resizeWorld()
 
 
@@ -220,6 +220,9 @@ class PlayState extends GameState {
     addLife(amount) {
         this.life += amount
         this.lifeText.text = "LIFE: " + this.life
+        if (life === 5){
+            this.trophy.show('cheio vida')
+        }
     }
 
     create() {
@@ -406,6 +409,7 @@ class PlayState extends GameState {
         } else {
             mush => mush.start();
         }
+        
     }
 
     questionMarkCollide(player, questionMark) {
@@ -441,7 +445,7 @@ class PlayState extends GameState {
             save_point_id: 1
         };
 
-        console.log(data);
+        //console.log(data);
 
 
 //        this.sendCoins();
@@ -497,7 +501,7 @@ class PlayState extends GameState {
         this.player.x = this.playerX
         this.player.y = this.playerY
         setTimeout(this.setPlayMusic.bind(this), 2000);
-        this.camera.shake(0.001, 300)
+        this.camera.shake(0.02, 200);   
         this.enemies.destroy()
         this.createEnemies()
     }

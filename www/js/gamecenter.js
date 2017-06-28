@@ -1,5 +1,6 @@
 class ServerComm {
     static addTrophy(data, callback) {
+        console.log("add-trophy")
         ServerComm.sendRequest('lpbaiser', 'add-trophy', data, callback);
     }
 

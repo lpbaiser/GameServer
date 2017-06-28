@@ -45,7 +45,7 @@ class Player extends Phaser.Sprite {
         let bala = new FireBall(this.game, this.x, this.y +5, 'bullet')
         this.game.add.existing(bala);
         bala.body.velocity.x = 400
-        this.weapon.add(bala);
+        //this.weapon.add(bala);
     }
 
     update() {

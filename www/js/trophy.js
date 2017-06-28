@@ -16,6 +16,10 @@ class Trophy extends Phaser.Sprite {
                 {name: 'noob', xp: 0,
                     title: 'YOU ARE A NOOB',
                     description: 'Third death on game'}
+        this.data['cheio vida'] =
+                {name: 'vida5', xp: 0,
+                    title: 'CHEIO DE VIDA',
+                    description: 'Conseguiu chegar a 5 vidas'}
 
         this.panels = [] // fila de paineis de trofeus
         this.achieved = [] // lista dos nomes do trofeus jah conquistados

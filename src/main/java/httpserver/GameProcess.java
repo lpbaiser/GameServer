@@ -115,9 +115,12 @@ public class GameProcess {
                 double sp_id = (double) jData.get("save_point_id");
                 Level level = new Level(coins, sp_id, sp_y, sp_id, life, xp);
                 level.setPlayerNomePlayer(player);
+                level.setIdLevel(1);
                 levelDAO = new LevelDAO();
                 levelDAO.insert(level);
-
+                code = 200;
+                data = "";
+                break;
             default:
                 code = 404;
                 data = "Erro, não foi possível encontrar uma solução para requisição";
