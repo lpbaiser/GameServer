@@ -75,10 +75,12 @@ public class Worker implements Runnable {
             outputStream.close();
         } catch (IOException ex) {
             Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public Response choose(String path) throws IOException {
+    public Response choose(String path) throws IOException, Exception {
         if (request.getMethod().equals("GET")) {
             if (path.endsWith(".html")) {
                 response = getResponseFile(request, path, "text/html");

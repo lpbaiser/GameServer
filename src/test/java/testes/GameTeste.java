@@ -25,7 +25,7 @@ public class GameTeste {
     public GameTeste() {
     }
 
-    @Test
+//    @Test
     public void createNewGameAndNewPlayer() {
         Player playerPO = new Player();
         playerPO.setNomePlayer("lpbaiser");
@@ -42,7 +42,7 @@ public class GameTeste {
 
         GameDAO gameDAO = new GameDAO();
         gameDAO.insert(gamePO);
-        gamePO1 = gameDAO.obter(1);
+        gamePO1 = gameDAO.obter("1");
         Assert.assertEquals(gamePO.getPlayerNomePlayer(), gamePO1.getPlayerNomePlayer());
     }
 
@@ -78,6 +78,11 @@ public class GameTeste {
 
         player = playerDAO.obter("coisinhoblablablabalba");
         Assert.assertEquals(player, null);
+        player = playerDAO.obter("lpbaiser");
+        System.out.println("------------------------------------------");
+        System.out.println(player.getNomePlayer());
+        Assert.assertNotEquals(player, null);
+
     }
 //    @Test
 //    public void addTrophy() {

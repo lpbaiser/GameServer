@@ -6,6 +6,7 @@
 package game;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -76,9 +77,9 @@ public class Player implements Serializable {
         this.idLevelAtual = idLevelAtual;
     }
 
-    public Player(String nomePlayer, String senha) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+//    public Player(String nomePlayer, String senha) {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//    }
 
     public String getNomePlayer() {
         return nomePlayer;
