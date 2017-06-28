@@ -65,8 +65,7 @@ public class Trophy implements Serializable {
         this.idTrophy = idTrophy;
     }
 
-    public Trophy(Integer idTrophy, String nameTrophy, double xpTrophy, String titleTrophy, String descriptionTrophy) {
-        this.idTrophy = idTrophy;
+    public Trophy(String nameTrophy, double xpTrophy, String titleTrophy, String descriptionTrophy) {
         this.nameTrophy = nameTrophy;
         this.xpTrophy = xpTrophy;
         this.titleTrophy = titleTrophy;

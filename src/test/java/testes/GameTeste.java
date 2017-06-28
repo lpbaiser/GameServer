@@ -70,6 +70,15 @@ public class GameTeste {
         System.out.println(json);
     }
 
+    @Test
+    public void obterPlayer() {
+        PlayerDAO playerDAO;
+        playerDAO = new PlayerDAO();
+        Player player;
+
+        player = playerDAO.obter("coisinhoblablablabalba");
+        Assert.assertEquals(player, null);
+    }
 //    @Test
 //    public void addTrophy() {
 //        TrophyDAO trophyDAO = new TrophyDAO();
