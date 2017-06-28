@@ -23,13 +23,11 @@ import static gameprotocol.GameProcotolOperation.CLEAR_TROPHY;
 import static gameprotocol.GameProcotolOperation.LIST_TROPHY;
 import gameprotocol.GameProtocolRequest;
 import gameprotocol.GameProtocolResponse;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  *
- * @author romulo
  */
 public class GameProcess {
 
@@ -40,6 +38,7 @@ public class GameProcess {
     private final TrophyDAO trophyDAO;
     private LevelDAO levelDAO;
     private Player player;
+    private Level level;
 
     public GameProcess(GameDAO gameDAO, PlayerDAO playerDAO, TrophyDAO trophyDAO) {
         this.gameDAO = gameDAO;
@@ -64,9 +63,12 @@ public class GameProcess {
         return gcpResponse;
     }
 
-    protected GameProtocolResponse postGameResource(Request request) {
+    protected GameProtocolResponse postGameResource(Request request) throws Exception {
         Object data = "";
         int code = 500;
+        String password;
+        List<Trophy> trophyList;
+        Trophy trophy;
         Gson gson = new Gson();
         GameProtocolRequest gcpRequest = gson.fromJson(request.getValue(), GameProtocolRequest.class);
         String idPlayer = gcpRequest.getId();
@@ -82,12 +84,13 @@ public class GameProcess {
                 data = "Pontuação Adicionada: " + newScore;
                 break;
             case ADD_TROPHY:
-                LinkedTreeMap objectTrophy = (LinkedTreeMap) gcpRequest.getData();
-//                Passava um path no Trophy
-                Trophy trophy = new Trophy();
-//                player.setATrophy(trophy);
+                trophy = new Trophy((String) jData.get("name"), (double) jData.get("xp"), (String) jData.get("title"), (String) jData.get("description"));
+                trophyList = player.getTrophyList();
+                trophyList.add(trophy);
+                player.setTrophyList(trophyList);
+                playerDAO.update(player);
                 code = 200;
-                data = "";
+                data = "ok";
                 break;
             case LIST_TROPHY:
 //                ArrayList<Trophy> trophies = (ArrayList) playerController.getPlayerById(gcpRequest.getId()).getTrophyList();
@@ -100,11 +103,35 @@ public class GameProcess {
                 break;
             case ADD_PLAYER:
                 code = 200;
-                data = "";
+                data = "ok";
+                break;
+            case ADD_PROFILE:
+                if (player == null) {
+                    password = (String) jData.get("password");
+                    player = new Player(idPlayer, password, 0, 1);
+                    playerDAO.insert(player);
+                    code = 200;
+                    data = "ok";
+                } else {
+                    code = 200;
+                    data = "Id do usuário já existe em nossos servidores";
+
+                }
                 break;
             case QUERY_PROFILE:
-                code = 200;
-                data = "";
+                password = (String) ((LinkedTreeMap) jData.get("data")).get("password");
+                if (player.getSenha().equals(password)) {
+                    level = player.getLevelList().get(player.getIdLevelAtual());
+                    List<Object> objectList = new ArrayList<>();
+                    objectList.add(level);
+                    objectList.add(player);
+                    objectList.add(player.getTrophyList());
+                    code = 200;
+                    data = gson.toJson(objectList);
+                } else {
+                    code = 401;
+                    data = "Usuário ou senha inválidos.";
+                }
                 break;
             case SAVE_POINT:
                 double coins = (double) jData.get("coins");
@@ -119,12 +146,12 @@ public class GameProcess {
                 levelDAO = new LevelDAO();
                 levelDAO.insert(level);
                 code = 200;
-                data = "";
+                data = "ok";
                 break;
             default:
                 code = 404;
                 data = "Erro, não foi possível encontrar uma solução para requisição";
-                throw new AssertionError(operation.name());
+                throw new Exception("Operação não conhecida");
         }
 //        playerDAO.update(player);
 
