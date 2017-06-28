@@ -136,7 +136,7 @@ public class GameProcess {
                         objectList.add(level);
                         objectList.add(jPlayer);
                         trophyList = player.getTrophyList();
-//                        objectList.add(player.getTrophyList());
+                        objectList.add(trophyList);
                         code = 200;
                         data = gson.toJson(objectList);
                     } else {
