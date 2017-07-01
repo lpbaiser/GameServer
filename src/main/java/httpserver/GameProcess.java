@@ -66,6 +66,9 @@ public class GameProcess {
 
     protected GameProtocolResponse postGameResource(Request request) throws Exception {
 
+        System.out.println("-----------------------------");
+        System.out.println(request.getValue());
+        System.out.println("-----------------------------");
         Object data;
         int code = 500;
         String password;
@@ -77,8 +80,10 @@ public class GameProcess {
         GameProtocolRequest gcpRequest = gson.fromJson(request.getValue(), GameProtocolRequest.class);
         String idPlayer = gcpRequest.getId();
         if (idPlayer != null) {
-            jPlayer = playerController.getPlayerById(idPlayer);
             player = playerDAO.obter(idPlayer);
+            if (player != null) {
+                jPlayer = playerController.getPlayerById(idPlayer);
+            }
             operation = gcpRequest.getOperation();
             jData = (LinkedTreeMap) gcpRequest.getData();
             switch (operation) {
@@ -155,8 +160,8 @@ public class GameProcess {
                         ArrayList<Object> objectList = new ArrayList<>();
                         objectList.add(level);
                         objectList.add(jPlayer);
-                        trophyList = player.getTrophyList();
-                        objectList.add(trophyList);
+//                        trophyList = player.getTrophyList();
+//                        objectList.add(trophyList);
                         code = 200;
                         data = gson.toJson(objectList);
                     } else {
@@ -192,6 +197,6 @@ public class GameProcess {
 //        playerDAO.update(player);
 //        gameController.update(game);
         GameProtocolResponse gcpResponse = new GameProtocolResponse(code, data);
-        return gcpResponse;
+            return gcpResponse;
     }
 }

@@ -37,7 +37,7 @@ class ServerComm {
     }
 
     static ajaxPost(data, callback) {
-        let url = 'http://localhost:8000/game'
+        let url = '/game'
         $.post(url, JSON.stringify(data))
                 .done(function (data, status) {
                     $('#status').addClass("label-success").removeClass("label-warning");
