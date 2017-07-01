@@ -65,11 +65,8 @@ public class GameProcess {
     }
 
     protected GameProtocolResponse postGameResource(Request request) throws Exception {
-<<<<<<< HEAD
-        Object data = null;
-=======
+
         Object data;
->>>>>>> c68787fcdaed2a139cf9c2c14d6a811331fe5ad8
         int code = 500;
         String password;
         List<Trophy> trophyList;
