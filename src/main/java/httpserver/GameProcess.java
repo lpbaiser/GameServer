@@ -79,6 +79,24 @@ public class GameProcess {
         GameProcotolOperation operation = null;
         GameProtocolRequest gcpRequest = gson.fromJson(request.getValue(), GameProtocolRequest.class);
         String idPlayer = gcpRequest.getId();
+
+        //se eu nao tiver o profile requisitado
+        HttpServer.serverComunication.sendRequest();
+        HttpServer.serverComunication.gameProtocolRequest = gcpRequest;
+        HttpServer.serverComunication.gameProtocolResponses.clear();
+        HttpServer.serverComunication.timeout = System.currentTimeMillis() + 5000;
+        HttpServer.serverComunication.estouPerguntando = true;
+        while (System.currentTimeMillis() < HttpServer.serverComunication.timeout) {
+        }
+
+        ArrayList<GameProtocolResponse> gameProtocolResponses = HttpServer.serverComunication.gameProtocolResponses;
+        //verificar se alguma resposta é o profile requerido
+        for (GameProtocolResponse gameProtocolResponse : gameProtocolResponses) {
+            return gameProtocolResponse;
+        }
+
+//        Retornar erro protocol 
+//se o server perguntar e eu nao tiver
         if (idPlayer != null) {
             player = playerDAO.obter(idPlayer);
             if (player != null) {
@@ -197,6 +215,6 @@ public class GameProcess {
 //        playerDAO.update(player);
 //        gameController.update(game);
         GameProtocolResponse gcpResponse = new GameProtocolResponse(code, data);
-            return gcpResponse;
+        return gcpResponse;
     }
 }

@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 public class HttpServer {
 
     public static final String RESOURCES_PATH = "./www/";
+    static ServerComunication serverComunication;
 
     /**
      * @param args the command line arguments
@@ -31,6 +32,10 @@ public class HttpServer {
         System.out.println("Server is Running");
         ServerSocket serverSocket = null;
         try {
+            serverComunication = new ServerComunication();
+            Thread threadServerCommunication = new Thread(serverComunication);
+            threadServerCommunication.start();
+
             /* cria um socket "servidor" associado a porta 8000
           já aguardando conexões
              */
