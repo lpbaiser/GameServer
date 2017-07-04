@@ -3,9 +3,9 @@
   <persistence-unit name="UP" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>game.Game</class>
+    <class>game.Images</class>
     <class>game.Level</class>
     <class>game.Player</class>
-    <class>game.PlayerHasTrophy</class>
     <class>game.Trophy</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/game_server?zeroDateTimeBehavior=convertToNull"/>

@@ -1,28 +1,45 @@
 class ServerComm {
     static addTrophy(data, callback) {
         console.log("add-trophy")
-        ServerComm.sendRequest('lpbaiser', 'add-trophy', data, callback);
+        ServerComm.sendRequest(Config.USER_ID, 'add-trophy', data, callback);
     }
 
     static listTrophy(callback) {
-        ServerComm.sendRequest('lpbaiser', 'list-trophy', '', callback);
+        ServerComm.sendRequest(Config.USER_ID, 'list-trophy', '', callback);
+    }
+    
+    static listMedia(callback) {
+        ServerComm.sendRequest(Config.USER_ID, 'list-media', '', callback);
     }
 
     static clearTrophy(callback) {
-        ServerComm.sendRequest('lpbaiser', 'clear-trophy', '', callback);
+        ServerComm.sendRequest(Config.USER_ID, 'clear-trophy', '', callback);
     }
 
     static addScore(data, callback) {
-        ServerComm.sendRequest('lpbaiser', 'add-score', data, callback);
+        ServerComm.sendRequest(Config.USER_ID, 'add-score', data, callback);
     }
 
     static addSavePoint(data, callback) {
-        ServerComm.sendRequest('lpbaiser', 'save-point', data, callback);
+        ServerComm.sendRequest(Config.USER_ID, 'save-point', data, callback);
+    }
+
+    static saveMidia(data, callback) {
+        ServerComm.sendRequest(Config.USER_ID, 'save-midia', data, callback);
     }
 
     static login(data, callback) {
         //alert("login")
         ServerComm.ajaxPost(data, callback)
+    }
+    
+    static afterLogin(){
+        ServerComm.listTrophy(function (trophys){
+            console.log(trophys)
+        })
+        ServerComm.listMedia(function (images){
+            console.log(images)
+        })
     }
 
     // metodo generico a ser usado por todas as 

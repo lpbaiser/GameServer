@@ -191,8 +191,8 @@
                         let data2 = JSON.stringify(data);
                         console.log(data2['coins']);
                         
-//                        console.log('data ' + response['data'])
-//                        console.log('coins ' + response['data'].coins)
+                        ServerComm.afterLogin();
+                        
                     } else {
                         console.log("nao logado");
                         document.getElementById("label-erro-login").style.display = "block";

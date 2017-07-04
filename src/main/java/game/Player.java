@@ -6,7 +6,6 @@
 package game;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -25,7 +24,7 @@ import javax.validation.constraints.Size;
 
 /**
  *
- * @author marco
+ * @author leonardo
  */
 @Entity
 @Table(name = "player")
@@ -61,6 +60,8 @@ public class Player implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "playerNomePlayer")
     private List<Game> gameList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "playerNomePlayer")
+    private List<Images> imagesList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "playerNomePlayer")
     private List<Level> levelList;
 
     public Player() {
@@ -76,10 +77,6 @@ public class Player implements Serializable {
         this.life = life;
         this.idLevelAtual = idLevelAtual;
     }
-
-//    public Player(String nomePlayer, String senha) {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//    }
 
     public String getNomePlayer() {
         return nomePlayer;
@@ -127,6 +124,14 @@ public class Player implements Serializable {
 
     public void setGameList(List<Game> gameList) {
         this.gameList = gameList;
+    }
+
+    public List<Images> getImagesList() {
+        return imagesList;
+    }
+
+    public void setImagesList(List<Images> imagesList) {
+        this.imagesList = imagesList;
     }
 
     public List<Level> getLevelList() {

@@ -22,7 +22,7 @@ import javax.validation.constraints.Size;
 
 /**
  *
- * @author marco
+ * @author leonardo
  */
 @Entity
 @Table(name = "trophy")
@@ -65,11 +65,16 @@ public class Trophy implements Serializable {
         this.idTrophy = idTrophy;
     }
 
-    public Trophy(String nameTrophy, double xpTrophy, String titleTrophy, String descriptionTrophy) {
+    public Trophy(Integer idTrophy, String nameTrophy, double xpTrophy, String titleTrophy, String descriptionTrophy) {
+        this.idTrophy = idTrophy;
         this.nameTrophy = nameTrophy;
         this.xpTrophy = xpTrophy;
         this.titleTrophy = titleTrophy;
         this.descriptionTrophy = descriptionTrophy;
+    }
+
+    public Trophy(String string, double d, String string0, String string1) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public Integer getIdTrophy() {

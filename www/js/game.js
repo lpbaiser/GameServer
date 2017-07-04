@@ -302,10 +302,17 @@ class PlayState extends GameState {
     takeScreenShot() {
 // jQuery
         let imgData = this.game.canvas.toDataURL()
+        console.log(imgData);
 
         $('#div-screenshot').append(
                 `<img src=${imgData} alt='game screenshot' class='screenshot'>`
                 )
+        
+        let data = {
+            mimeType: "image/png",
+            src: imgData,
+        };
+        ServerComm.saveMidia(data, response => this.onServerResponse(response));
     }
 
     toogleFullScreen() {
@@ -452,13 +459,6 @@ class PlayState extends GameState {
             save_point_y: this.playerY,
             save_point_id: 1
         };
-
-        //console.log(data);
-
-
-//        this.sendCoins();
-        //console.log(this.playerX)
-        //console.log(this.playerY)
         ServerComm.addSavePoint(data, response => this.onServerResponse(response));
     }
 
