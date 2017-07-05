@@ -95,13 +95,13 @@ public class GameProcess {
                 HttpServer.serverComunication.sendRequest();
                 gcpRequest.setIsServer(true);
                 HttpServer.serverComunication.setGameProtocolRequest(gcpRequest);
-                HttpServer.serverComunication.getGameProtocolResponses().clear();
+                HttpServer.serverComunication.gameProtocolResponses.clear();
                 HttpServer.serverComunication.setTimeout(System.currentTimeMillis() + 30000);
                 HttpServer.serverComunication.setEstouPerguntando(true);
                 while (System.currentTimeMillis() < HttpServer.serverComunication.getTimeout()) {
                 }
                 HttpServer.serverComunication.setEstouPerguntando(false);
-                ArrayList<GameProtocolResponse> gameProtocolResponses = HttpServer.serverComunication.getGameProtocolResponses();
+                ArrayList<GameProtocolResponse> gameProtocolResponses = HttpServer.serverComunication.gameProtocolResponses;
                 //verificar se alguma resposta é o profile requerido
                 for (GameProtocolResponse gameProtocolResponse : gameProtocolResponses) {
                     return gameProtocolResponse;

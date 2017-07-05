@@ -37,7 +37,7 @@ public class ServerComunication implements Runnable {
     public static final String MULTICAST_IP = "225.1.2.3";
     private MulticastSocket multicastSocket;
     private GameProtocolRequest gameProtocolRequest;
-    private ArrayList<GameProtocolResponse> gameProtocolResponses;
+    ArrayList<GameProtocolResponse> gameProtocolResponses;
     private long timeout;
     private boolean estouPerguntando = false;
 
@@ -76,20 +76,31 @@ public class ServerComunication implements Runnable {
                         OutputStream outputStream = httpURLConnection.getOutputStream();
                         Gson gson = new Gson();
                         String toJson = gson.toJson(gameProtocolRequest);
-                        outputStream.write(toJson.getBytes());
-                        InputStream inputStream = httpURLConnection.getInputStream();
-                        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-                        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                        Stream<String> lines = bufferedReader.lines();
-                        Iterator<String> iterator = lines.iterator();
-                        String next = "";
-                        while (iterator.hasNext()) {
-                            next += iterator.next();
+                        try {
+                            outputStream.write(toJson.getBytes());
+                            outputStream.close();
+                        } catch (IOException ex) {
+                            Logger.getLogger(ServerComunication.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                        next = next.replace("\\\"", "\"");
-                        next = next.replace("\\\\", "\\");
-                        GameProtocolResponse fromJson = gson.fromJson(next, GameProtocolResponse.class);
-                        this.gameProtocolResponses.add(fromJson);
+                        try {
+                            InputStream inputStream = httpURLConnection.getInputStream();
+                            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                            Stream<String> lines = bufferedReader.lines();
+                            Iterator<String> iterator = lines.iterator();
+                            String next = "";
+                            while (iterator.hasNext()) {
+                                next += iterator.next();
+                            }
+                            next = next.replace("\\\"", "\"");
+                            next = next.replace("\\\\", "\\");
+                            GameProtocolResponse fromJson = gson.fromJson(next, GameProtocolResponse.class);
+                            this.gameProtocolResponses.add(fromJson);
+                            inputStream.close();
+                            inputStreamReader.close();
+                        } catch (IOException ex) {
+                            Logger.getLogger(ServerComunication.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
                 }
             } catch (JsonSyntaxException | IOException ex) {
@@ -122,14 +133,6 @@ public class ServerComunication implements Runnable {
 
     public void setGameProtocolRequest(GameProtocolRequest gameProtocolRequest) {
         this.gameProtocolRequest = gameProtocolRequest;
-    }
-
-    public ArrayList<GameProtocolResponse> getGameProtocolResponses() {
-        return gameProtocolResponses;
-    }
-
-    public void setGameProtocolResponses(ArrayList<GameProtocolResponse> gameProtocolResponses) {
-        this.gameProtocolResponses = gameProtocolResponses;
     }
 
     public long getTimeout() {
