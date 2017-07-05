@@ -18,6 +18,7 @@ import game.Game;
 import game.Images;
 import game.Level;
 import game.Player;
+import game.Profile;
 import game.Ranking;
 import game.Trophy;
 import gameprotocol.GameProcotolOperation;
@@ -180,13 +181,15 @@ public class GameProcess {
                             } else {
                                 level = levelController.getLevelAtual(levelList, player.getIdLevelAtual());
                             }
-                            ArrayList<Object> objectList = new ArrayList<>();
-                            objectList.add(level);
-                            objectList.add(jPlayer);
+//                            ArrayList<Object> objectList = new ArrayList<>();
+//                            objectList.add(level);
+//                            objectList.add(jPlayer);
 //                        trophyList = player.getTrophyList();
 //                        objectList.add(trophyList);
+                            Profile profile = new Profile(level, player);
                             code = 200;
-                            data = objectList;
+                            data = profile;
+                            data = level;
                         } else {
                             code = 401;
                             data = "Usuário ou senha inválidos.";
