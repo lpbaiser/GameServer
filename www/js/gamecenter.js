@@ -34,18 +34,22 @@ class ServerComm {
 
     static afterLogin() {
         window.localStorage.setItem('usuario', Config.USER_ID);
-        console.log("listTrophy AND listImages")
+        $('#div-trophy').html('');
         ServerComm.listTrophy(function (trophys) {
             console.log(trophys)
-            trophys.forEach(function (trophy) {
-                let html = Templates.trophiesListItem(trophy)
+            let data = trophys.data;
+            data.forEach(function (trophy) {
+                let t = {name: trophy.nameTrophy, xp: trophy.xpTrophy,
+                    title: trophy.titleTrophy,
+                    description: trophy.descriptionTrophy};
+                let html = Templates.trophiesListItem(t)
                 $('#div-trophy').append(html)
-            })
+            });
         });
-
         ServerComm.listMedia(function (images) {
             console.log(images)
-            images.forEach(function (image) {
+            let data = images.data;
+            data.forEach(function (image) {
                 $('#div-screenshot').append(`<img src=${image} alt='game screenshot' class='screenshot'>`)
             });
         });
@@ -71,6 +75,7 @@ class ServerComm {
                     $('#status').addClass("label-success").removeClass("label-warning");
                     $('#status').text("ONLINE");
                     let jsonObj = JSON.parse(data)
+                    console.log(jsonObj)
                     callback(jsonObj)
                 })
                 .fail(function (jqXHR, status, errorThrown) {

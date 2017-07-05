@@ -96,8 +96,20 @@ class Trophy extends Phaser.Sprite {
          */
         // jQuery
         //$('#div-trophy').append('<p>' + JSON.stringify(this.data[trophyName]) + '</p>')
-        let html = Templates.trophiesListItem(this.data[trophyName])
-        $('#div-trophy').append(html)
+        // let html = Templates.trophiesListItem(this.data[trophyName])
+        //    $('#div-trophy').append(html)
+        $('#div-trophy').html('');
+        ServerComm.listTrophy(function (trophys) {
+            console.log(trophys)
+            let data = trophys.data;
+            data.forEach(function (trophy) {
+                let t = {name: trophy.nameTrophy, xp: trophy.xpTrophy,
+                    title: trophy.titleTrophy,
+                    description: trophy.descriptionTrophy};
+                let html = Templates.trophiesListItem(t)
+                $('#div-trophy').append(html)
+            });
+        });
     }
 
     removePanel() {
