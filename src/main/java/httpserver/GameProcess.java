@@ -7,6 +7,7 @@ package httpserver;
 
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
+import controller.LevelController;
 import controller.PlayerController;
 import dao.GameDAO;
 import dao.LevelDAO;
@@ -17,7 +18,7 @@ import game.Level;
 import game.Player;
 import game.Trophy;
 import gameprotocol.GameProcotolOperation;
-import static gameprotocol.GameProcotolOperation.ADD_PLAYER;
+import static gameprotocol.GameProcotolOperation.ADD_PROFILE;
 import static gameprotocol.GameProcotolOperation.ADD_TROPHY;
 import static gameprotocol.GameProcotolOperation.CLEAR_TROPHY;
 import static gameprotocol.GameProcotolOperation.LIST_TROPHY;
@@ -34,6 +35,7 @@ public class GameProcess {
     private Game game;
     private final GameDAO gameDAO;
     private final PlayerController playerController;
+    private final LevelController levelController;
     private final PlayerDAO playerDAO;
     private final TrophyDAO trophyDAO;
     private LevelDAO levelDAO;
@@ -45,6 +47,7 @@ public class GameProcess {
         this.gameDAO = gameDAO;
         this.playerDAO = playerDAO;
         this.playerController = new PlayerController();
+        this.levelController = new LevelController();
 
         this.trophyDAO = new TrophyDAO();
     }
@@ -81,9 +84,10 @@ public class GameProcess {
         String idPlayer = gcpRequest.getId();
 
         if (idPlayer != null) {
+            operation = gcpRequest.getOperation();
             player = playerDAO.obter(idPlayer);
             //se eu nao tiver o profile requisitado
-            if (player == null && !gcpRequest.isIsServer()) {
+            if (operation != ADD_PROFILE && player == null && !gcpRequest.isIsServer()) {
 
                 HttpServer.serverComunication.sendRequest();
                 gcpRequest.setIsServer(true);
@@ -103,10 +107,23 @@ public class GameProcess {
                 data = "Erro, não foi possível encontrar uma solução para requisição";
 //        Retornar erro protocol 
 //se o server perguntar e eu nao tiver
+            } else if (operation == ADD_PROFILE) {
+                if (player == null) {
+                    jData = (LinkedTreeMap) gcpRequest.getData();
+                    password = (String) jData.get("password");
+                    player = new Player(idPlayer, password, 0, 1);
+                    playerDAO.insert(player);
+                    code = 200;
+                    data = "ok";
+                } else {
+                    code = 200;
+                    data = "Id do usuário já existe em nossos servidores";
+
+                }
+
             } else {
                 jPlayer = playerController.getPlayerById(idPlayer);
-                operation = gcpRequest.getOperation();
-                if (gcpRequest.getData() != null) {
+                if (!(gcpRequest.getData() instanceof String)) {
                     jData = (LinkedTreeMap) gcpRequest.getData();
                 }
                 switch (operation) {
@@ -127,7 +144,7 @@ public class GameProcess {
                         data = "ok";
                         break;
                     case LIST_TROPHY:
-                        trophyList = player.getTrophyList();
+                        trophyList = playerController.getTrophyList(player);
                         code = 200;
                         data = gson.toJson(trophyList);
                         break;
@@ -145,7 +162,6 @@ public class GameProcess {
                         code = 200;
                         data = "Não encontrado";
                         break;
-
                     case CLEAR_TROPHY:
                         trophyList = player.getTrophyList();
                         trophyList.clear();
@@ -154,23 +170,6 @@ public class GameProcess {
                         code = 200;
                         data = "ok";
                         break;
-                    case ADD_PLAYER:
-                        code = 200;
-                        data = "ok";
-                        break;
-                    case ADD_PROFILE:
-                        if (player == null) {
-                            password = (String) jData.get("password");
-                            player = new Player(idPlayer, password, 0, 1);
-                            playerDAO.insert(player);
-                            code = 200;
-                            data = "ok";
-                        } else {
-                            code = 200;
-                            data = "Id do usuário já existe em nossos servidores";
-
-                        }
-                        break;
                     case QUERY_PROFILE:
                         password = (String) jData.get("password");
                         if (player.getSenha().equals(password)) {
@@ -178,7 +177,7 @@ public class GameProcess {
                             if (levelList.isEmpty()) {
                                 level = new Level(0, 0, 0, 0, 0, 0);
                             } else {
-                                level = levelList.get(player.getIdLevelAtual());
+                                level = levelController.getLevelAtual(levelList, player.getIdLevelAtual());
                             }
                             ArrayList<Object> objectList = new ArrayList<>();
                             objectList.add(level);
@@ -204,6 +203,7 @@ public class GameProcess {
                         level.setIdLevel(1);
                         levelDAO = new LevelDAO();
                         levelDAO.insert(level);
+                        playerController.updateLevel(level, player);
                         code = 200;
                         data = "ok";
                         break;
