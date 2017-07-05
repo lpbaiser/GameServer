@@ -106,7 +106,9 @@ public class GameProcess {
             } else {
                 jPlayer = playerController.getPlayerById(idPlayer);
                 operation = gcpRequest.getOperation();
-                jData = (LinkedTreeMap) gcpRequest.getData();
+                if (gcpRequest.getData() != null) {
+                    jData = (LinkedTreeMap) gcpRequest.getData();
+                }
                 switch (operation) {
                     case ADD_SCORE:
                         LinkedTreeMap jScore = (LinkedTreeMap) gcpRequest.getData();
