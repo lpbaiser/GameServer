@@ -27,6 +27,9 @@ class ServerComm {
     static saveMidia(data, callback) {
         ServerComm.sendRequest(Config.USER_ID, 'save-midia', data, callback);
     }
+    static getRanking(data, callback) {
+        ServerComm.sendRequest(Config.USER_ID, 'get-ranking', data, callback);
+    }
 
     static login(data, callback) {
         ServerComm.ajaxPost(data, callback)
@@ -34,7 +37,12 @@ class ServerComm {
 
     static afterLogin() {
         window.localStorage.setItem('usuario', Config.USER_ID);
-        $('#div-trophy').html('');
+//        $("#trophy-div").html('');
+//        $("#div-trophy").remove();
+//       $("#trophy-div").empty();
+//        document.getElementById("trophy-li").innerHTML = "";
+        $("#div-trophy").remove();
+        $("#trophy-div").append("<ul id=\"div-trophy\" class=\"list-group\"> <p id=\"trophies-list-empty-label\"> There are no trophies. </p></ul>");
         ServerComm.listTrophy(function (trophys) {
             console.log(trophys)
             let data = trophys.data;

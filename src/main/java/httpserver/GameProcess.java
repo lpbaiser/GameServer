@@ -16,6 +16,7 @@ import dao.TrophyDAO;
 import game.Game;
 import game.Level;
 import game.Player;
+import game.Ranking;
 import game.Trophy;
 import gameprotocol.GameProcotolOperation;
 import static gameprotocol.GameProcotolOperation.ADD_PROFILE;
@@ -206,7 +207,7 @@ public class GameProcess {
                         data = "ok";
                         break;
                     case GET_RANKING:
-                        List<Level> teenBetter = levelController.getTeenBetter();
+                        List<Ranking> teenBetter = levelController.getTeenBetter();
                         data = teenBetter;
                         code = 200;
                         break;

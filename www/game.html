@@ -121,13 +121,29 @@
                 <h3 class="panel-title">Trophies</h3>
                 <small>List of unlocked trophies</small>
             </div>
-            <div class="panel-body">
+            <div id="trophy-div" class="panel-body">
                 <ul id="div-trophy" class="list-group">
                     <p id="trophies-list-empty-label">
                         There are no trophies.
                     </p>
                 </ul>
             </div>
+            
+        </div>
+        
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Ranking</h3>
+                <small>Ranking 10 best players </small>
+            </div>
+            <div id="" class="panel-body">
+                <ul id="div-ranking" class="list-group">
+                    <p id="trophies-list-empty-label">
+                        There are no ranking.
+                    </p>
+                </ul>
+            </div>
+            
         </div>
 
         <!-- Panel Screenshots -->
@@ -147,6 +163,7 @@
     </div>
 
     <!-- TEMPLATES -->
+    
     <script id="template-profile-item"
             type="type/x-handlebars-template">
         <li class="list-group-item justify-content-between">
@@ -154,10 +171,17 @@
         <span class="badge badge-default badge-pill">{{value}}</span>
         </li>
     </script>
+    <script id="template-ranking"
+            type="type/x-handlebars-template">
+        <li class="list-group-item justify-content-between">
+        {{position}} - Player: {{player}}
+        <span class="badge badge-default badge-pill">xp:{{xp}}</span>
+        </li>
+    </script>
 
     <script id="template-trophies-list-item"
             type="type/x-handlebars-template">
-        <li class="list-group-item list-group-item-action flex-column align-items-start">
+        <li id="trophy-li" class="list-group-item list-group-item-action flex-column align-items-start">
         <h5 class="mb-1">
         <strong>{{title}}</strong>
         <small>{{xp}}xp</small>

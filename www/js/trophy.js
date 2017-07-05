@@ -98,7 +98,9 @@ class Trophy extends Phaser.Sprite {
         //$('#div-trophy').append('<p>' + JSON.stringify(this.data[trophyName]) + '</p>')
         // let html = Templates.trophiesListItem(this.data[trophyName])
         //    $('#div-trophy').append(html)
-        $('#div-trophy').html('');
+        $("#div-trophy").remove();
+        $("#trophy-div").append("<ul id=\"div-trophy\" class=\"list-group\"> <p id=\"trophies-list-empty-label\"> There are no trophies. </p></ul>");
+//        document.getElementById("trophy-li").innerHTML = "";
         ServerComm.listTrophy(function (trophys) {
             console.log(trophys)
             let data = trophys.data;
@@ -126,4 +128,7 @@ Templates.trophiesListItem = Handlebars.compile(
         );
 Templates.profileItem = Handlebars.compile(
         $('#template-profile-item').html()
+        );
+Templates.templateRanking = Handlebars.compile(
+        $('#template-ranking').html()
         );
