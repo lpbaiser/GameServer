@@ -236,10 +236,14 @@
                                     document.getElementById("form-login-button-logout").style.display = "inline";
                                     document.getElementById("form-login-button-login").style.display = "none";
                                     $('#show-player-login').text(usuario);
-                                    let player = response.data.player;
-//                                    let player = response.data.jPlayer;
-                                    console.log(player);
-                                    Config.LEVEL = level.level;
+                                    console.log("Response ", response)
+                                    console.log("Response ", response.data[0].life)
+                                    Config.LEVEL = response.data[1].idLevelAtual;
+                                    Config.COINS = response.data[0].coins;
+                                    Config.LIFE = response.data[0].life;
+                                    Config.XP = response.data[0].xp;
+                                    Config.POSX = response.data[0].savePontX;
+                                    Config.POSY = response.data[0].savePontY;
 
                                     ServerComm.afterLogin();
 

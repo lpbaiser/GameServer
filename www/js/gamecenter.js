@@ -54,7 +54,6 @@ class ServerComm {
             });
         });
         ServerComm.listMedia(function (images) {
-            console.log(images)
             let data = images.data;
             data.forEach(function (item) {
                 $('#div-screenshot').append(`<img src=${item.image} alt='game screenshot' class='screenshot'>`)

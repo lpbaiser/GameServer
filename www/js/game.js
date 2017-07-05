@@ -36,8 +36,8 @@ class PlayState extends GameState {
     preload() {
         this.data = {};
         this.qtdeDied = 0;
-        this.playerX = 100;
-        this.playerY = 200;
+        this.playerX = Config.POSX;
+        this.playerY = Config.POSY;
         this.playAgain = true;
         //load map
         this.game.load.tilemap('level1', `${dir}level${Config.LEVEL}.json`, null, Phaser.Tilemap.TILED_JSON);
