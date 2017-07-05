@@ -178,7 +178,7 @@ public class GameProcess {
                         if (player.getSenha().equals(password)) {
                             List<Level> levelList = player.getLevelList();
                             if (levelList.isEmpty()) {
-                                level = new Level(0, 0, 0, 0, 0, 0);
+                                level = new Level(0, 0, 0, 0, 3, 0);
                             } else {
                                 level = levelController.getLevelAtual(levelList, player.getIdLevelAtual());
                             }
