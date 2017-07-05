@@ -116,7 +116,7 @@ public class GameProcess {
                 if (player == null) {
                     jData = (LinkedTreeMap) gcpRequest.getData();
                     password = (String) jData.get("password");
-                    player = new Player(idPlayer, password, 0, 1);
+                    player = new Player(idPlayer, password, 3, 1);
                     playerDAO.insert(player);
                     code = 200;
                     data = "ok";
