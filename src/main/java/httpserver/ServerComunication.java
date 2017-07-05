@@ -91,7 +91,7 @@ public class ServerComunication implements Runnable {
         try {
             byte[] sharedBuffer = "req".getBytes();
             DatagramPacket request = new DatagramPacket(sharedBuffer, sharedBuffer.length);
-            multicastSocket.receive(request);
+            multicastSocket.send(request);
         } catch (IOException ex) {
             Logger.getLogger(ServerComunication.class.getName()).log(Level.SEVERE, null, ex);
         }

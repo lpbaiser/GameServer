@@ -136,9 +136,7 @@ public class GameProcess {
                         break;
                     case ADD_TROPHY:
                         trophy = new Trophy((String) jData.get("name"), (double) jData.get("xp"), (String) jData.get("title"), (String) jData.get("description"));
-                        trophyList = player.getTrophyList();
-                        trophyList.add(trophy);
-                        player.setTrophyList(trophyList);
+                        playerController.updateTrophyList(player, trophy);
                         playerDAO.update(player);
                         code = 200;
                         data = "ok";

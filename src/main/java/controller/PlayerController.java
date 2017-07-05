@@ -24,12 +24,27 @@ public class PlayerController {
         this.playerDAO = new PlayerDAO();
     }
 
+    public void updateTrophyList(Player player, Trophy trophy) {
+        boolean haveTrophy = false;
+        for (Trophy trophy1 : player.getTrophyList()) {
+            if (trophy1.getNameTrophy().equals(trophy.getNameTrophy())) {
+                if (trophy1.getXpTrophy() < trophy.getXpTrophy()) {
+                    trophy1 = trophy;
+                    haveTrophy = true;
+                }
+            }
+        }
+        if (!haveTrophy) {
+            player.getTrophyList().add(trophy);
+        }
+    }
+
     public List<Trophy> getTrophyList(Player player) {
         List<Trophy> trophyList = player.getTrophyList();
         for (Trophy trophy : trophyList) {
             trophy.setPlayerList(null);
         }
-        return  trophyList;
+        return trophyList;
     }
 
     public Player getPlayerById(String id) {
