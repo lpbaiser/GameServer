@@ -179,7 +179,8 @@
                     }
                 }
                 ServerComm.login(data, function (response) {
-                    if (response['response'] !== '200') {
+                    console.log(response)
+                    if (response['response'] == 200) {
                         console.log("logado");
                         Config.USER_ID = usuario;
                         document.getElementById("show-login-p").style.display = "block";
@@ -218,7 +219,8 @@
                     }
                 }
                 ServerComm.login(data, function (response) {
-                    if (response['response'] == '200') {
+                    console.log(response)
+                    if (response['response'] == 200) {
                         document.getElementById("show-login").style.display = "block";
                         Config.USER_ID = usuario;
                         document.getElementById("show-login-p").style.display = "block";
