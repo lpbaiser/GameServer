@@ -395,9 +395,7 @@ class PlayState extends GameState {
         //this.game.physics.arcade.collide(this.balas, this.mapLayer, this.destroiBala, null, this);
         //game.physics.arcade.overlap(this.weapon, this.enemies, this.hitEnemy, null, this);
 
-        this.xp = Config.XP;
-        this.amountCoins = Config.COINS;
-        this.life = Config.LIFE;
+     
 
     }
 
