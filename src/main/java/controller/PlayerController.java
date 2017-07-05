@@ -94,4 +94,9 @@ public class PlayerController {
         playerDAO.update(player);
     }
 
+//    public List<String> listMedia(Player player){
+//    
+//    
+//    }
+    
 }

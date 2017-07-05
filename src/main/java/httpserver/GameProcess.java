@@ -210,6 +210,10 @@ public class GameProcess {
                         data = teenBetter;
                         code = 200;
                         break;
+                    case LIST_MEDIA:
+//                        player.getImagesList();
+                        data = "";
+                        break;
                     default:
                         code = 200;
                         data = "Erro, não foi possível encontrar uma solução para requisição";
