@@ -7,6 +7,7 @@ package controller;
 
 import dao.LevelDAO;
 import game.Level;
+import game.Ranking;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -36,23 +37,26 @@ public class LevelController {
         return level1;
     }
 
-    public List<Level> getTeenBetter() {
+    public List<Ranking> getTeenBetter() {
         List<Level> levelList = levelDAO.list();
-        List<Level> newLevelList = new ArrayList<>();
+        List<Ranking> ranking = new ArrayList<>();
         levelList.sort(new Comparator<Level>() {
             @Override
             public int compare(Level o1, Level o2) {
-                return Double.compare(o1.getXp(), o2.getXp());
+                return Double.compare(o2.getXp(), o1.getXp());
             }
         });
-        int i = 10;
+        int i = 0;
         for (Level level : levelList) {
             i++;
-            if (levelList.size() <= i) {
+            if (i <11) {
+                String nomePlayer = level.getPlayerNomePlayer().getNomePlayer();
+                int xp = (int) level.getXp();
+                Ranking r = new Ranking(String.valueOf(i), nomePlayer, String.valueOf(xp));
                 level.setPlayerNomePlayer(null);
-                newLevelList.add(level);
+                ranking.add(r);
             }
         }
-        return newLevelList;
+        return ranking;
     }
 }

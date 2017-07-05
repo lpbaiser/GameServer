@@ -167,5 +167,5 @@ public class Level implements Serializable {
     public String toString() {
         return "game.Level[ idLevel=" + idLevel + " ]";
     }
-    
+
 }

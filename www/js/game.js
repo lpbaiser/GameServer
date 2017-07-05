@@ -9,6 +9,23 @@ class Game extends Phaser.Game {
         //this.state.start('Play')
         this.state.add('Title', TitleState, false)
         this.state.start('Title')
+
+        let data = {
+            player: Config.USER_ID
+        }
+        ServerComm.getRanking(data, function (response) {
+            if (response['response'] === 200) {
+                console.log("response");
+                console.log(response.data);
+                let data = response.data;
+                data.forEach(function (rank) {
+                    let t = {position: rank.position, player: rank.playerName, xp: rank.xp};
+                    let html = Templates.templateRanking(t)
+                    $('#div-ranking').append(html)
+                })
+            }
+            return;
+        });
     }
 }
 
@@ -377,6 +394,8 @@ class PlayState extends GameState {
         this.game.physics.arcade.overlap(this.enemies, this.weapon, this.killEnemies, null, this)
         //this.game.physics.arcade.collide(this.balas, this.mapLayer, this.destroiBala, null, this);
         //game.physics.arcade.overlap(this.weapon, this.enemies, this.hitEnemy, null, this);
+
+
     }
 
     collectCoin(player, coin) {
@@ -551,4 +570,6 @@ window.onload = function () {
 
 
     const GAME = new Game()
+
+
 }
