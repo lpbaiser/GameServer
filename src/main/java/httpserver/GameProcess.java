@@ -211,8 +211,8 @@ public class GameProcess {
                         code = 200;
                         break;
                     case LIST_MEDIA:
-//                        player.getImagesList();
-                        data = "";
+                        data = playerController.listMedia(player);
+                        code = 200;
                         break;
                     default:
                         code = 200;

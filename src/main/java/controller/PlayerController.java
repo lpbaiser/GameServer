@@ -6,6 +6,7 @@
 package controller;
 
 import dao.PlayerDAO;
+import game.Images;
 import game.Level;
 import game.Player;
 import game.Trophy;
@@ -94,9 +95,12 @@ public class PlayerController {
         playerDAO.update(player);
     }
 
-//    public List<String> listMedia(Player player){
-//    
-//    
-//    }
-    
+    public List<Images> listMedia(Player player) {
+        for (Images images : player.getImagesList()) {
+            images.setPlayerNomePlayer(null);
+        }
+        return player.getImagesList();
+
+    }
+
 }
