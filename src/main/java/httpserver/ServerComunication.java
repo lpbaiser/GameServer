@@ -6,6 +6,7 @@
 package httpserver;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import gameprotocol.GameProtocolRequest;
 import gameprotocol.GameProtocolResponse;
 import java.io.BufferedReader;
@@ -85,11 +86,13 @@ public class ServerComunication implements Runnable {
                         while (iterator.hasNext()) {
                             next += iterator.next();
                         }
+                        next = next.replace("\\\"", "\"");
+                        next = next.replace("\\\\", "\\");
                         GameProtocolResponse fromJson = gson.fromJson(next, GameProtocolResponse.class);
                         this.gameProtocolResponses.add(fromJson);
                     }
                 }
-            } catch (IOException ex) {
+            } catch (JsonSyntaxException | IOException ex) {
                 Logger.getLogger(ServerComunication.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
