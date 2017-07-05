@@ -17,6 +17,7 @@ import java.net.DatagramPacket;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.net.NetworkInterface;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,29 +59,35 @@ public class ServerComunication implements Runnable {
                 byte[] sharedBuffer = new byte[3];
                 DatagramPacket request = new DatagramPacket(sharedBuffer, sharedBuffer.length);
                 multicastSocket.receive(request);
-                if (Arrays.equals(sharedBuffer, "req".getBytes())) {
-                    DatagramPacket response = new DatagramPacket("rep".getBytes(), 3, InetAddress.getByName(MULTICAST_IP), multicastSocket.getLocalPort());
-                    multicastSocket.send(response);
-                } else if (estouPerguntando && Arrays.equals(sharedBuffer, "rep".getBytes())) {
-                    InetAddress address = request.getAddress();
-                    URL url = new URL("http://" + address.getHostAddress() + ":8000" + "/games");
-                    HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                    httpURLConnection.setDoOutput(true);
-                    OutputStream outputStream = httpURLConnection.getOutputStream();
-                    Gson gson = new Gson();
-                    String toJson = gson.toJson(gameProtocolRequest);
-                    outputStream.write(toJson.getBytes());
-                    InputStream inputStream = httpURLConnection.getInputStream();
-                    InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-                    BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                    Stream<String> lines = bufferedReader.lines();
-                    Iterator<String> iterator = lines.iterator();
-                    String next = "";
-                    while (iterator.hasNext()) {
-                        next += iterator.next();
+                byte[] bytesReq = "req".getBytes();
+                byte[] bytesRep = "rep".getBytes();
+                InetAddress enderecoDeResposta = request.getAddress();
+                NetworkInterface redeDaResposta = NetworkInterface.getByInetAddress(enderecoDeResposta);
+                if (redeDaResposta == null) {
+                    if (Arrays.equals(sharedBuffer, bytesReq)) {
+                        DatagramPacket response = new DatagramPacket("rep".getBytes(), 3, InetAddress.getByName(MULTICAST_IP), multicastSocket.getLocalPort());
+                        multicastSocket.send(response);
+                    } else if (estouPerguntando && Arrays.equals(sharedBuffer, bytesRep)) {
+                        InetAddress address = request.getAddress();
+                        URL url = new URL("http://" + address.getHostAddress() + ":8000" + "/games");
+                        HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                        httpURLConnection.setDoOutput(true);
+                        OutputStream outputStream = httpURLConnection.getOutputStream();
+                        Gson gson = new Gson();
+                        String toJson = gson.toJson(gameProtocolRequest);
+                        outputStream.write(toJson.getBytes());
+                        InputStream inputStream = httpURLConnection.getInputStream();
+                        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                        Stream<String> lines = bufferedReader.lines();
+                        Iterator<String> iterator = lines.iterator();
+                        String next = "";
+                        while (iterator.hasNext()) {
+                            next += iterator.next();
+                        }
+                        GameProtocolResponse fromJson = gson.fromJson(next, GameProtocolResponse.class);
+                        this.gameProtocolResponses.add(fromJson);
                     }
-                    GameProtocolResponse fromJson = gson.fromJson(next, GameProtocolResponse.class);
-                    this.gameProtocolResponses.add(fromJson);
                 }
             } catch (IOException ex) {
                 Logger.getLogger(ServerComunication.class.getName()).log(Level.SEVERE, null, ex);
