@@ -202,7 +202,7 @@ public class GameProcess {
                         double sp_x = (double) jData.get("save_point_x");
                         double sp_y = (double) jData.get("save_point_y");
                         double sp_id = (double) jData.get("save_point_id");
-                        Level level = new Level(coins, sp_id, sp_y, sp_id, life, xp);
+                        Level level = new Level(coins, sp_x, sp_y, sp_id, life, xp);
                         level.setPlayerNomePlayer(player);
                         level.setIdLevel(1);
                         levelDAO = new LevelDAO();
