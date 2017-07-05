@@ -51,7 +51,7 @@ class PlayState extends GameState {
         this.game.load.audio('mario-jump', ['assets/audio/mario-jump.mp3']);
         this.game.load.audio('mario-save-point', ['assets/audio/mario-save-point.mp3']);
 
-       
+
     }
 
     createPlayer() {
@@ -221,7 +221,7 @@ class PlayState extends GameState {
 
     addLife(amount) {
         this.life += amount;
-        Config.LIFE = this.life; 
+        Config.LIFE = this.life;
         this.lifeText.text = "LIFE: " + this.life
         if (this.life === 5) {
             this.trophy.show('cheio vida')
@@ -237,7 +237,7 @@ class PlayState extends GameState {
         let bg;
         if (Config.LEVEL == 2) {
             Config.PULO = -350;
-            
+
         }
         if (Config.LEVEL == 3) {
             Config.PULO = -250;
@@ -307,7 +307,7 @@ class PlayState extends GameState {
         $('#div-screenshot').append(
                 `<img src=${imgData} alt='game screenshot' class='screenshot'>`
                 )
-        
+
         let data = {
             mimeType: "image/png",
             src: imgData,
@@ -548,5 +548,7 @@ class PlayState extends GameState {
 
 window.onload = function () {
 // funciona como singleton
+
+
     const GAME = new Game()
 }
