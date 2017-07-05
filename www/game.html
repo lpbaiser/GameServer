@@ -128,9 +128,9 @@
                     </p>
                 </ul>
             </div>
-            
+
         </div>
-        
+
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">Ranking</h3>
@@ -143,7 +143,7 @@
                     </p>
                 </ul>
             </div>
-            
+
         </div>
 
         <!-- Panel Screenshots -->
@@ -163,7 +163,7 @@
     </div>
 
     <!-- TEMPLATES -->
-    
+
     <script id="template-profile-item"
             type="type/x-handlebars-template">
         <li class="list-group-item justify-content-between">
@@ -235,7 +235,10 @@
                                     document.getElementById("show-login-h4").style.display = "block";
                                     document.getElementById("form-login-button-logout").style.display = "inline";
                                     document.getElementById("form-login-button-login").style.display = "none";
-                                    $('#show-player-login').text(usuario);                                   
+                                    $('#show-player-login').text(usuario);
+//                                    let level = response.data.level;
+//                                    let player = response.data.jPlayer;
+//                                    Config.LEVEL = level.level;
 
                                     ServerComm.afterLogin();
 
