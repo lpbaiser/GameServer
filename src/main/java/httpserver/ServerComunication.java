@@ -37,7 +37,7 @@ public class ServerComunication implements Runnable {
     public static final String MULTICAST_IP = "225.1.2.3";
     private MulticastSocket multicastSocket;
     private GameProtocolRequest gameProtocolRequest;
-    ArrayList<GameProtocolResponse> gameProtocolResponses;
+    private ArrayList<GameProtocolResponse> gameProtocolResponses;
     private long timeout;
     private boolean estouPerguntando = false;
 
@@ -67,7 +67,7 @@ public class ServerComunication implements Runnable {
                 if (redeDaResposta == null) {
                     if (Arrays.equals(sharedBuffer, bytesReq)) {
                         DatagramPacket response = new DatagramPacket("rep".getBytes(), 3, InetAddress.getByName(MULTICAST_IP), multicastSocket.getLocalPort());
-                        multicastSocket.send(response);
+//                        multicastSocket.send(response);
                     } else if (estouPerguntando && Arrays.equals(sharedBuffer, bytesRep)) {
                         InetAddress address = request.getAddress();
                         URL url = new URL("http://" + address.getHostAddress() + ":8000" + "/games");
@@ -78,7 +78,7 @@ public class ServerComunication implements Runnable {
                         String toJson = gson.toJson(gameProtocolRequest);
                         try {
                             outputStream.write(toJson.getBytes());
-                            outputStream.close();
+                            outputStream.flush();
                         } catch (IOException ex) {
                             Logger.getLogger(ServerComunication.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -96,8 +96,7 @@ public class ServerComunication implements Runnable {
                             next = next.replace("\\\\", "\\");
                             GameProtocolResponse fromJson = gson.fromJson(next, GameProtocolResponse.class);
                             this.gameProtocolResponses.add(fromJson);
-                            inputStream.close();
-                            inputStreamReader.close();
+                            notifyAll();
                         } catch (IOException ex) {
                             Logger.getLogger(ServerComunication.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -133,6 +132,12 @@ public class ServerComunication implements Runnable {
 
     public void setGameProtocolRequest(GameProtocolRequest gameProtocolRequest) {
         this.gameProtocolRequest = gameProtocolRequest;
+    }
+
+    public ArrayList<GameProtocolResponse> getGameProtocolResponses() {
+        ArrayList<GameProtocolResponse> gameProtocolResponses = this.gameProtocolResponses;
+        this.gameProtocolResponses = new ArrayList<>();
+        return gameProtocolResponses;
     }
 
     public long getTimeout() {
