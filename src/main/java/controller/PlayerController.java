@@ -24,8 +24,16 @@ public class PlayerController {
         this.playerDAO = new PlayerDAO();
     }
 
+    public List<Trophy> getTrophyList(Player player) {
+        List<Trophy> trophyList = player.getTrophyList();
+        for (Trophy trophy : trophyList) {
+            trophy.setPlayerList(null);
+        }
+        return  trophyList;
+    }
+
     public Player getPlayerById(String id) {
-        
+
         Player player = playerDAO.obter(id);
         //PlayerPK playerPk = new PlayerPK(player.getPlayerPK().getNomePlayer());
         Player p = new Player(player.getNomePlayer(), player.getSenha(), player.getLife(), player.getIdLevelAtual());
@@ -59,4 +67,16 @@ public class PlayerController {
         playerDAO.update(player);
         return newScore;
     }
+
+    public void updateLevel(Level level, Player player) {
+        List<Level> levelList = player.getLevelList();
+        if (levelList == null) {
+            levelList = new ArrayList<>();
+        }
+        levelList.add(level);
+        player.setLevelList(levelList);
+        player.setIdLevelAtual(level.getIdLevel());
+        playerDAO.update(player);
+    }
+
 }
