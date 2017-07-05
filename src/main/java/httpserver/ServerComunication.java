@@ -59,12 +59,13 @@ public class ServerComunication implements Runnable {
                 DatagramPacket request = new DatagramPacket(sharedBuffer, sharedBuffer.length);
                 multicastSocket.receive(request);
                 if (Arrays.equals(sharedBuffer, "req".getBytes())) {
-                    DatagramPacket response = new DatagramPacket("rep".getBytes(), 3);
+                    DatagramPacket response = new DatagramPacket("rep".getBytes(), 3, InetAddress.getByName(MULTICAST_IP), multicastSocket.getLocalPort());
                     multicastSocket.send(response);
                 } else if (estouPerguntando && Arrays.equals(sharedBuffer, "rep".getBytes())) {
                     InetAddress address = request.getAddress();
                     URL url = new URL("http://" + address.getHostAddress() + ":8000" + "/games");
                     HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                    httpURLConnection.setDoOutput(true);
                     OutputStream outputStream = httpURLConnection.getOutputStream();
                     Gson gson = new Gson();
                     String toJson = gson.toJson(gameProtocolRequest);
@@ -90,7 +91,7 @@ public class ServerComunication implements Runnable {
     void sendRequest() {
         try {
             byte[] sharedBuffer = "req".getBytes();
-            DatagramPacket request = new DatagramPacket(sharedBuffer, sharedBuffer.length);
+            DatagramPacket request = new DatagramPacket(sharedBuffer, sharedBuffer.length, InetAddress.getByName(MULTICAST_IP), multicastSocket.getLocalPort());
             multicastSocket.send(request);
         } catch (IOException ex) {
             Logger.getLogger(ServerComunication.class.getName()).log(Level.SEVERE, null, ex);

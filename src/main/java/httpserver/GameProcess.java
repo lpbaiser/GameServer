@@ -103,8 +103,8 @@ public class GameProcess {
                 for (GameProtocolResponse gameProtocolResponse : gameProtocolResponses) {
                     return gameProtocolResponse;
                 }
-                code = 200;
-                data = "Erro, não foi possível encontrar uma solução para requisição";
+                code = 401;
+                data = "Usuário ou senha inválidos.";
 //        Retornar erro protocol 
 //se o server perguntar e eu nao tiver
             } else if (operation == ADD_PROFILE) {
