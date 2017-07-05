@@ -185,7 +185,7 @@ class PlayState extends GameState {
 
     cretateHud() {
         this.coinsText = this.game.add.text(16, 10, '', {fontSize: "16px", fill: '#ffee00'});
-        this.coinsText.text = "COINS: 0";
+        this.coinsText.text = "COINS: " + this.amountCoins;
         this.coinsText.fixedToCamera = true;
 
         this.lifeText = this.game.add.text(100, 10, '', {fontSize: "16px", fill: '#086003'});
@@ -395,6 +395,9 @@ class PlayState extends GameState {
         //this.game.physics.arcade.collide(this.balas, this.mapLayer, this.destroiBala, null, this);
         //game.physics.arcade.overlap(this.weapon, this.enemies, this.hitEnemy, null, this);
 
+        this.xp = Config.XP;
+        this.amountCoins = Config.COINS;
+        this.life = Config.LIFE;
 
     }
 
