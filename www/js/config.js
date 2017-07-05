@@ -12,5 +12,5 @@ Config.COINS = 0;
 Config.LIFE = 3;
 Config.XP = 0;
 Config.DEBUG = false;
-Config.USER_ID = "";
+Config.USER_ID = null;
 Config.PULO = -250;

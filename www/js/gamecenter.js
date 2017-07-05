@@ -7,7 +7,7 @@ class ServerComm {
     static listTrophy(callback) {
         ServerComm.sendRequest(Config.USER_ID, 'list-trophy', '', callback);
     }
-    
+
     static listMedia(callback) {
         ServerComm.sendRequest(Config.USER_ID, 'list-media', '', callback);
     }
@@ -29,17 +29,25 @@ class ServerComm {
     }
 
     static login(data, callback) {
-        //alert("login")
         ServerComm.ajaxPost(data, callback)
     }
-    
-    static afterLogin(){
-        ServerComm.listTrophy(function (trophys){
+
+    static afterLogin() {
+        console.log("listTrophy AND listImages")
+        ServerComm.listTrophy(function (trophys) {
             console.log(trophys)
-        })
-        ServerComm.listMedia(function (images){
+            trophys.forEach(function (trophy) {
+                let html = Templates.trophiesListItem(trophy)
+                $('#div-trophy').append(html)
+            })
+        });
+
+        ServerComm.listMedia(function (images) {
             console.log(images)
-        })
+            images.forEach(function (image) {
+                $('#div-screenshot').append(`<img src=${image} alt='game screenshot' class='screenshot'>`)
+            });
+        });
     }
 
     // metodo generico a ser usado por todas as 
@@ -54,18 +62,20 @@ class ServerComm {
     }
 
     static ajaxPost(data, callback) {
-        let url = '/game'
-        $.post(url, JSON.stringify(data))
-                .done(function (data, status) {
-                    $('#status').addClass("label-success").removeClass("label-warning");
-                    $('#status').text("ONLINE");
-                    let jsonObj = JSON.parse(data)
-                    callback(jsonObj)
-                })
-                .fail(function (jqXHR, status, errorThrown) {
-                    $('#status').addClass("label-warning").removeClass("label-success");
-                    $('#status').text('OFFLINE');
-                })
+        if (Config.USER_ID != null) {
+            let url = '/game'
+            $.post(url, JSON.stringify(data))
+                    .done(function (data, status) {
+                        $('#status').addClass("label-success").removeClass("label-warning");
+                        $('#status').text("ONLINE");
+                        let jsonObj = JSON.parse(data)
+                        callback(jsonObj)
+                    })
+                    .fail(function (jqXHR, status, errorThrown) {
+                        $('#status').addClass("label-warning").removeClass("label-success");
+                        $('#status').text('OFFLINE');
+                    })
+        }
     }
 }
 
