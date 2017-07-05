@@ -70,22 +70,13 @@ public class Level implements Serializable {
         this.idLevel = idLevel;
     }
 
-    public Level(Integer idLevel, double coins, double savePointX, double savePontY, double savePointId, double life, double xp) {
-        this.idLevel = idLevel;
+    public Level(double coins, double savePointX, double savePontY, double savePointId, double life, double xp) {
         this.coins = coins;
         this.savePointX = savePointX;
         this.savePontY = savePontY;
         this.savePointId = savePointId;
         this.life = life;
         this.xp = xp;
-    }
-
-    public Level(int i, int i0, int i1, int i2, int i3, int i4) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public Level(double coins, double sp_id, double sp_y, double sp_id0, int life, int xp) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public Integer getIdLevel() {

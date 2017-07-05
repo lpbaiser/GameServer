@@ -80,132 +80,136 @@ public class GameProcess {
         GameProtocolRequest gcpRequest = gson.fromJson(request.getValue(), GameProtocolRequest.class);
         String idPlayer = gcpRequest.getId();
 
-        //se eu nao tiver o profile requisitado
-        HttpServer.serverComunication.sendRequest();
-        HttpServer.serverComunication.gameProtocolRequest = gcpRequest;
-        HttpServer.serverComunication.gameProtocolResponses.clear();
-        HttpServer.serverComunication.timeout = System.currentTimeMillis() + 5000;
-        HttpServer.serverComunication.estouPerguntando = true;
-        while (System.currentTimeMillis() < HttpServer.serverComunication.timeout) {
-        }
-
-        ArrayList<GameProtocolResponse> gameProtocolResponses = HttpServer.serverComunication.gameProtocolResponses;
-        //verificar se alguma resposta é o profile requerido
-        for (GameProtocolResponse gameProtocolResponse : gameProtocolResponses) {
-            return gameProtocolResponse;
-        }
-
-//        Retornar erro protocol 
-//se o server perguntar e eu nao tiver
         if (idPlayer != null) {
             player = playerDAO.obter(idPlayer);
-            if (player != null) {
-                jPlayer = playerController.getPlayerById(idPlayer);
-            }
-            operation = gcpRequest.getOperation();
-            jData = (LinkedTreeMap) gcpRequest.getData();
-            switch (operation) {
-                case ADD_SCORE:
-                    LinkedTreeMap jScore = (LinkedTreeMap) gcpRequest.getData();
-                    double score = (Double) jScore.get("score");
-                    double newScore = playerController.updateScore(score, idPlayer);
-                    code = 200;
-                    data = "Pontuação Adicionada: " + newScore;
-                    break;
-                case ADD_TROPHY:
-                    trophy = new Trophy((String) jData.get("name"), (double) jData.get("xp"), (String) jData.get("title"), (String) jData.get("description"));
-                    trophyList = player.getTrophyList();
-                    trophyList.add(trophy);
-                    player.setTrophyList(trophyList);
-                    playerDAO.update(player);
-                    code = 200;
-                    data = "ok";
-                    break;
-                case LIST_TROPHY:
-                    trophyList = player.getTrophyList();
-                    code = 200;
-                    data = gson.toJson(trophyList);
-                    break;
-                case GET_TROPHY:
-                    trophyList = player.getTrophyList();
-                    String trophyName;
-                    trophyName = (String) jData.get("");
-                    for (Trophy trophy1 : trophyList) {
-                        if (trophy1.getNameTrophy().equals(trophyName)) {
-                            data = gson.toJson(trophy1);
-                            code = 200;
-                            break;
-                        }
-                    }
-                    code = 200;
-                    data = "Não encontrado";
-                    break;
+            //se eu nao tiver o profile requisitado
+            if (player == null && !gcpRequest.isIsServer()) {
 
-                case CLEAR_TROPHY:
-                    trophyList = player.getTrophyList();
-                    trophyList.clear();
-                    player.setTrophyList(trophyList);
-                    playerDAO.update(player);
-                    code = 200;
-                    data = "ok";
-                    break;
-                case ADD_PLAYER:
-                    code = 200;
-                    data = "ok";
-                    break;
-                case ADD_PROFILE:
-                    if (player == null) {
-                        password = (String) jData.get("password");
-                        player = new Player(idPlayer, password, 0, 1);
-                        playerDAO.insert(player);
+                HttpServer.serverComunication.sendRequest();
+                gcpRequest.setIsServer(true);
+                HttpServer.serverComunication.setGameProtocolRequest(gcpRequest);
+                HttpServer.serverComunication.getGameProtocolResponses().clear();
+                HttpServer.serverComunication.setTimeout(System.currentTimeMillis() + 5000);
+                HttpServer.serverComunication.setEstouPerguntando(true);
+                while (System.currentTimeMillis() < HttpServer.serverComunication.getTimeout()) {
+                }
+                HttpServer.serverComunication.setEstouPerguntando(false);
+                ArrayList<GameProtocolResponse> gameProtocolResponses = HttpServer.serverComunication.getGameProtocolResponses();
+                //verificar se alguma resposta é o profile requerido
+                for (GameProtocolResponse gameProtocolResponse : gameProtocolResponses) {
+                    return gameProtocolResponse;
+                }
+                code = 200;
+                data = "Erro, não foi possível encontrar uma solução para requisição";
+//        Retornar erro protocol 
+//se o server perguntar e eu nao tiver
+            } else {
+                jPlayer = playerController.getPlayerById(idPlayer);
+                operation = gcpRequest.getOperation();
+                jData = (LinkedTreeMap) gcpRequest.getData();
+                switch (operation) {
+                    case ADD_SCORE:
+                        LinkedTreeMap jScore = (LinkedTreeMap) gcpRequest.getData();
+                        double score = (Double) jScore.get("score");
+                        double newScore = playerController.updateScore(score, idPlayer);
+                        code = 200;
+                        data = "Pontuação Adicionada: " + newScore;
+                        break;
+                    case ADD_TROPHY:
+                        trophy = new Trophy((String) jData.get("name"), (double) jData.get("xp"), (String) jData.get("title"), (String) jData.get("description"));
+                        trophyList = player.getTrophyList();
+                        trophyList.add(trophy);
+                        player.setTrophyList(trophyList);
+                        playerDAO.update(player);
                         code = 200;
                         data = "ok";
-                    } else {
+                        break;
+                    case LIST_TROPHY:
+                        trophyList = player.getTrophyList();
                         code = 200;
-                        data = "Id do usuário já existe em nossos servidores";
-
-                    }
-                    break;
-                case QUERY_PROFILE:
-                    password = (String) jData.get("password");
-                    if (player.getSenha().equals(password)) {
-                        List<Level> levelList = player.getLevelList();
-                        if (levelList.isEmpty()) {
-                            level = new Level(0, 0, 0, 0, 0, 0);
-                        } else {
-                            level = levelList.get(player.getIdLevelAtual());
+                        data = gson.toJson(trophyList);
+                        break;
+                    case GET_TROPHY:
+                        trophyList = player.getTrophyList();
+                        String trophyName;
+                        trophyName = (String) jData.get("");
+                        for (Trophy trophy1 : trophyList) {
+                            if (trophy1.getNameTrophy().equals(trophyName)) {
+                                data = gson.toJson(trophy1);
+                                code = 200;
+                                break;
+                            }
                         }
-                        ArrayList<Object> objectList = new ArrayList<>();
-                        objectList.add(level);
-                        objectList.add(jPlayer);
+                        code = 200;
+                        data = "Não encontrado";
+                        break;
+
+                    case CLEAR_TROPHY:
+                        trophyList = player.getTrophyList();
+                        trophyList.clear();
+                        player.setTrophyList(trophyList);
+                        playerDAO.update(player);
+                        code = 200;
+                        data = "ok";
+                        break;
+                    case ADD_PLAYER:
+                        code = 200;
+                        data = "ok";
+                        break;
+                    case ADD_PROFILE:
+                        if (player == null) {
+                            password = (String) jData.get("password");
+                            player = new Player(idPlayer, password, 0, 1);
+                            playerDAO.insert(player);
+                            code = 200;
+                            data = "ok";
+                        } else {
+                            code = 200;
+                            data = "Id do usuário já existe em nossos servidores";
+
+                        }
+                        break;
+                    case QUERY_PROFILE:
+                        password = (String) jData.get("password");
+                        if (player.getSenha().equals(password)) {
+                            List<Level> levelList = player.getLevelList();
+                            if (levelList.isEmpty()) {
+                                level = new Level(0, 0, 0, 0, 0, 0);
+                            } else {
+                                level = levelList.get(player.getIdLevelAtual());
+                            }
+                            ArrayList<Object> objectList = new ArrayList<>();
+                            objectList.add(level);
+                            objectList.add(jPlayer);
 //                        trophyList = player.getTrophyList();
 //                        objectList.add(trophyList);
+                            code = 200;
+                            data = gson.toJson(objectList);
+                        } else {
+                            code = 401;
+                            data = "Usuário ou senha inválidos.";
+                        }
+                        break;
+                    case SAVE_POINT:
+                        double coins = (double) jData.get("coins");
+                        int life = (int) (double) jData.get("life");
+                        int xp = (int) (double) jData.get("xp");
+                        double sp_x = (double) jData.get("save_point_x");
+                        double sp_y = (double) jData.get("save_point_y");
+                        double sp_id = (double) jData.get("save_point_id");
+                        Level level = new Level(coins, sp_id, sp_y, sp_id, life, xp);
+                        level.setPlayerNomePlayer(player);
+                        level.setIdLevel(1);
+                        levelDAO = new LevelDAO();
+                        levelDAO.insert(level);
                         code = 200;
-                        data = gson.toJson(objectList);
-                    } else {
-                        code = 401;
-                        data = "Usuário ou senha inválidos.";
-                    }
-                    break;
-                case SAVE_POINT:
-                    double coins = (double) jData.get("coins");
-                    int life = (int) (double) jData.get("life");
-                    int xp = (int) (double) jData.get("xp");
-                    double sp_x = (double) jData.get("save_point_x");
-                    double sp_y = (double) jData.get("save_point_y");
-                    double sp_id = (double) jData.get("save_point_id");
-                    Level level = new Level(coins, sp_id, sp_y, sp_id, life, xp);
-                    level.setPlayerNomePlayer(player);
-                    level.setIdLevel(1);
-                    levelDAO = new LevelDAO();
-                    levelDAO.insert(level);
-                    code = 200;
-                    data = "ok";
-                    break;
-                default:
-                    code = 200;
-                    data = "Erro, não foi possível encontrar uma solução para requisição";
-                    throw new Exception("Operação não conhecida");
+                        data = "ok";
+                        break;
+                    default:
+                        code = 200;
+                        data = "Erro, não foi possível encontrar uma solução para requisição";
+                        throw new Exception("Operação não conhecida");
+                }
             }
         } else {
             code = 200;
@@ -215,6 +219,7 @@ public class GameProcess {
 //        playerDAO.update(player);
 //        gameController.update(game);
         GameProtocolResponse gcpResponse = new GameProtocolResponse(code, data);
+        gcpRequest.setIsServer(false);
         return gcpResponse;
     }
 }

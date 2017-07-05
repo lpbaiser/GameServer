@@ -33,11 +33,11 @@ public class ServerComunication implements Runnable {
 
     public static final int MULTICAST_PORT = 8889;
     public static final String MULTICAST_IP = "225.1.2.3";
-    MulticastSocket multicastSocket;
-    GameProtocolRequest gameProtocolRequest;
-    ArrayList<GameProtocolResponse> gameProtocolResponses;
-    long timeout;
-    boolean estouPerguntando = false;
+    private MulticastSocket multicastSocket;
+    private GameProtocolRequest gameProtocolRequest;
+    private ArrayList<GameProtocolResponse> gameProtocolResponses;
+    private long timeout;
+    private boolean estouPerguntando = false;
 
     public ServerComunication() {
         gameProtocolResponses = new ArrayList<>();
@@ -63,7 +63,7 @@ public class ServerComunication implements Runnable {
                     multicastSocket.send(response);
                 } else if (estouPerguntando && Arrays.equals(sharedBuffer, "rep".getBytes())) {
                     InetAddress address = request.getAddress();
-                    URL url = new URL("http://" + address.getHostAddress() + ":8888" + "/games");
+                    URL url = new URL("http://" + address.getHostAddress() + ":8000" + "/games");
                     HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
                     OutputStream outputStream = httpURLConnection.getOutputStream();
                     Gson gson = new Gson();
@@ -96,4 +96,45 @@ public class ServerComunication implements Runnable {
             Logger.getLogger(ServerComunication.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    public MulticastSocket getMulticastSocket() {
+        return multicastSocket;
+    }
+
+    public void setMulticastSocket(MulticastSocket multicastSocket) {
+        this.multicastSocket = multicastSocket;
+    }
+
+    public GameProtocolRequest getGameProtocolRequest() {
+        return gameProtocolRequest;
+    }
+
+    public void setGameProtocolRequest(GameProtocolRequest gameProtocolRequest) {
+        this.gameProtocolRequest = gameProtocolRequest;
+    }
+
+    public ArrayList<GameProtocolResponse> getGameProtocolResponses() {
+        return gameProtocolResponses;
+    }
+
+    public void setGameProtocolResponses(ArrayList<GameProtocolResponse> gameProtocolResponses) {
+        this.gameProtocolResponses = gameProtocolResponses;
+    }
+
+    public long getTimeout() {
+        return timeout;
+    }
+
+    public void setTimeout(long timeout) {
+        this.timeout = timeout;
+    }
+
+    public boolean isEstouPerguntando() {
+        return estouPerguntando;
+    }
+
+    public void setEstouPerguntando(boolean estouPerguntando) {
+        this.estouPerguntando = estouPerguntando;
+    }
+
 }
