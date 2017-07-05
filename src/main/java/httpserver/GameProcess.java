@@ -96,7 +96,7 @@ public class GameProcess {
                 gcpRequest.setIsServer(true);
                 HttpServer.serverComunication.setGameProtocolRequest(gcpRequest);
                 HttpServer.serverComunication.getGameProtocolResponses().clear();
-                HttpServer.serverComunication.setTimeout(System.currentTimeMillis() + 50000);
+                HttpServer.serverComunication.setTimeout(System.currentTimeMillis() + 30000);
                 HttpServer.serverComunication.setEstouPerguntando(true);
                 while (System.currentTimeMillis() < HttpServer.serverComunication.getTimeout()) {
                 }
