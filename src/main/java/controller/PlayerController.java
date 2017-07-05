@@ -6,6 +6,7 @@
 package controller;
 
 import dao.PlayerDAO;
+import game.Images;
 import game.Level;
 import game.Player;
 import game.Trophy;
@@ -92,6 +93,14 @@ public class PlayerController {
         player.setLevelList(levelList);
         player.setIdLevelAtual(level.getIdLevel());
         playerDAO.update(player);
+    }
+
+    public List<Images> listMedia(Player player) {
+        for (Images images : player.getImagesList()) {
+            images.setPlayerNomePlayer(null);
+        }
+        return player.getImagesList();
+
     }
 
 }

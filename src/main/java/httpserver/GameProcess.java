@@ -94,7 +94,7 @@ public class GameProcess {
                 gcpRequest.setIsServer(true);
                 HttpServer.serverComunication.setGameProtocolRequest(gcpRequest);
                 HttpServer.serverComunication.getGameProtocolResponses().clear();
-                HttpServer.serverComunication.setTimeout(System.currentTimeMillis() + 5000);
+                HttpServer.serverComunication.setTimeout(System.currentTimeMillis() + 50000);
                 HttpServer.serverComunication.setEstouPerguntando(true);
                 while (System.currentTimeMillis() < HttpServer.serverComunication.getTimeout()) {
                 }
@@ -209,6 +209,10 @@ public class GameProcess {
                     case GET_RANKING:
                         List<Ranking> teenBetter = levelController.getTeenBetter();
                         data = teenBetter;
+                        code = 200;
+                        break;
+                    case LIST_MEDIA:
+                        data = playerController.listMedia(player);
                         code = 200;
                         break;
                     default:
