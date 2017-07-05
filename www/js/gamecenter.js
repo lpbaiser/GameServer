@@ -34,15 +34,14 @@ class ServerComm {
 
     static afterLogin() {
         window.localStorage.setItem('usuario', Config.USER_ID);
-        console.log("listTrophy AND listImages")
         ServerComm.listTrophy(function (trophys) {
             console.log(trophys)
             trophys.forEach(function (trophy) {
                 let html = Templates.trophiesListItem(trophy)
                 $('#div-trophy').append(html)
-            })
+            });
         });
-
+        console.log(t);
         ServerComm.listMedia(function (images) {
             console.log(images)
             images.forEach(function (image) {
@@ -71,6 +70,7 @@ class ServerComm {
                     $('#status').addClass("label-success").removeClass("label-warning");
                     $('#status').text("ONLINE");
                     let jsonObj = JSON.parse(data)
+                    console.log(jsonObj)
                     callback(jsonObj)
                 })
                 .fail(function (jqXHR, status, errorThrown) {
