@@ -182,14 +182,14 @@ public class GameProcess {
                             } else {
                                 level = levelController.getLevelAtual(levelList, player.getIdLevelAtual());
                             }
-//                            ArrayList<Object> objectList = new ArrayList<>();
-//                            objectList.add(level);
-//                            objectList.add(jPlayer);
-//                        trophyList = player.getTrophyList();
-//                        objectList.add(trophyList);
-                            Profile profile = new Profile(level, player);
+                            ArrayList<Object> objectList = new ArrayList<>();
+                            objectList.add(level);
+                            objectList.add(jPlayer);
+//                            trophyList = player.getTrophyList();
+//                            objectList.add(trophyList);
+//                            Profile profile = new Profile(level, player);
                             code = 200;
-                            data = profile;
+                            data = objectList;
                         } else {
                             code = 401;
                             data = "Usuário ou senha inválidos.";
