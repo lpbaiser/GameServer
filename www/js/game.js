@@ -329,7 +329,7 @@ class PlayState extends GameState {
             mimeType: "image/png",
             src: imgData,
         };
-        ServerComm.saveMidia(data, response => this.onServerResponse(response));
+        ServerComm.saveMedia(data, response => this.onServerResponse(response));
     }
 
     toogleFullScreen() {
@@ -483,7 +483,7 @@ class PlayState extends GameState {
 
     onServerResponse(response) {
         console.log(response)
-        if (response['response'] != '200') {
+        if (response['response'] !== 200) {
             console.log("ERRO de comunicao com o servidor")
             return
         }

@@ -24,8 +24,8 @@ class ServerComm {
         ServerComm.sendRequest(Config.USER_ID, 'save-point', data, callback);
     }
 
-    static saveMidia(data, callback) {
-        ServerComm.sendRequest(Config.USER_ID, 'save-midia', data, callback);
+    static saveMedia(data, callback) {
+        ServerComm.sendRequest(Config.USER_ID, 'save-media', data, callback);
     }
     static getRanking(data, callback) {
         ServerComm.sendRequest(Config.USER_ID, 'get-ranking', data, callback);
@@ -42,9 +42,8 @@ class ServerComm {
 //       $("#trophy-div").empty();
 //        document.getElementById("trophy-li").innerHTML = "";
         $("#div-trophy").remove();
-        $("#trophy-div").append("<ul id=\"div-trophy\" class=\"list-group\"> <p id=\"trophies-list-empty-label\"> There are no trophies. </p></ul>");
+        $("#trophy-div").append("<ul id=\"div-trophy\" class=\"list-group\"> </ul>");
         ServerComm.listTrophy(function (trophys) {
-            console.log(trophys)
             let data = trophys.data;
             data.forEach(function (trophy) {
                 let t = {name: trophy.nameTrophy, xp: trophy.xpTrophy,
@@ -57,8 +56,8 @@ class ServerComm {
         ServerComm.listMedia(function (images) {
             console.log(images)
             let data = images.data;
-            data.forEach(function (image) {
-                $('#div-screenshot').append(`<img src=${image} alt='game screenshot' class='screenshot'>`)
+            data.forEach(function (item) {
+                $('#div-screenshot').append(`<img src=${item.image} alt='game screenshot' class='screenshot'>`)
             });
         });
     }

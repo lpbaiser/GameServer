@@ -10,10 +10,12 @@ import com.google.gson.internal.LinkedTreeMap;
 import controller.LevelController;
 import controller.PlayerController;
 import dao.GameDAO;
+import dao.ImageDAO;
 import dao.LevelDAO;
 import dao.PlayerDAO;
 import dao.TrophyDAO;
 import game.Game;
+import game.Images;
 import game.Level;
 import game.Player;
 import game.Ranking;
@@ -73,7 +75,7 @@ public class GameProcess {
         System.out.println("-----------------------------");
         System.out.println(request.getValue());
         System.out.println("-----------------------------");
-        Object data;
+        Object data = null;
         int code = 500;
         String password;
         List<Trophy> trophyList;
@@ -214,6 +216,12 @@ public class GameProcess {
                     case LIST_MEDIA:
                         data = playerController.listMedia(player);
                         code = 200;
+                        break;
+                    case SAVE_MEDIA:
+                        String img = (String) jData.get("src");
+                        Images image = new Images(img, player);
+                        ImageDAO imageDAO = new ImageDAO();
+                        imageDAO.insert(image);
                         break;
                     default:
                         code = 200;

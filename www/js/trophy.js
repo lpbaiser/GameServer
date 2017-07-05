@@ -99,7 +99,7 @@ class Trophy extends Phaser.Sprite {
         // let html = Templates.trophiesListItem(this.data[trophyName])
         //    $('#div-trophy').append(html)
         $("#div-trophy").remove();
-        $("#trophy-div").append("<ul id=\"div-trophy\" class=\"list-group\"> <p id=\"trophies-list-empty-label\"> There are no trophies. </p></ul>");
+        $("#trophy-div").append("<ul id=\"div-trophy\" class=\"list-group\"> </ul>");
 //        document.getElementById("trophy-li").innerHTML = "";
         ServerComm.listTrophy(function (trophys) {
             console.log(trophys)
