@@ -53,29 +53,29 @@ class ServerComm {
     // metodo generico a ser usado por todas as 
     // requisicoes de trofeus
     static sendRequest(user, opName, opData, callback) {
-        let data = {
-            id: user,
-            op: opName,
-            data: opData
+        if (Config.USER_ID != null) {
+            let data = {
+                id: user,
+                op: opName,
+                data: opData
+            }
+            ServerComm.ajaxPost(data, callback)
         }
-        ServerComm.ajaxPost(data, callback)
     }
 
     static ajaxPost(data, callback) {
-        if (Config.USER_ID != null) {
-            let url = '/game'
-            $.post(url, JSON.stringify(data))
-                    .done(function (data, status) {
-                        $('#status').addClass("label-success").removeClass("label-warning");
-                        $('#status').text("ONLINE");
-                        let jsonObj = JSON.parse(data)
-                        callback(jsonObj)
-                    })
-                    .fail(function (jqXHR, status, errorThrown) {
-                        $('#status').addClass("label-warning").removeClass("label-success");
-                        $('#status').text('OFFLINE');
-                    })
-        }
+        let url = '/game'
+        $.post(url, JSON.stringify(data))
+                .done(function (data, status) {
+                    $('#status').addClass("label-success").removeClass("label-warning");
+                    $('#status').text("ONLINE");
+                    let jsonObj = JSON.parse(data)
+                    callback(jsonObj)
+                })
+                .fail(function (jqXHR, status, errorThrown) {
+                    $('#status').addClass("label-warning").removeClass("label-success");
+                    $('#status').text('OFFLINE');
+                })
     }
 }
 
