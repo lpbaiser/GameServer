@@ -72,6 +72,7 @@ public class Worker implements Runnable {
             request.setPath(path);
             response = choose(path);
             response.enviar(outputStream);
+            outputStream.flush();
             outputStream.close();
         } catch (IOException ex) {
             Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);

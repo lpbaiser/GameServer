@@ -188,7 +188,7 @@ public class GameProcess {
 //                        objectList.add(trophyList);
                             Profile profile = new Profile(level, player);
                             code = 200;
-                            data = profile;
+                            data = level;
                         } else {
                             code = 401;
                             data = "Usuário ou senha inválidos.";
