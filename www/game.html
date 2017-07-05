@@ -236,9 +236,10 @@
                                     document.getElementById("form-login-button-logout").style.display = "inline";
                                     document.getElementById("form-login-button-login").style.display = "none";
                                     $('#show-player-login').text(usuario);
-//                                    let level = response.data.level;
+                                    let player = response.data.player;
 //                                    let player = response.data.jPlayer;
-//                                    Config.LEVEL = level.level;
+                                    console.log(player);
+                                    Config.LEVEL = level.level;
 
                                     ServerComm.afterLogin();
 
