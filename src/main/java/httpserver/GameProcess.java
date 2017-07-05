@@ -84,6 +84,8 @@ public class GameProcess {
         Gson gson = new Gson();
         LinkedTreeMap jData = null;
         GameProcotolOperation operation = null;
+//        System.out.println("------------JSON");
+//        System.out.println(request.getValue());
         GameProtocolRequest gcpRequest = gson.fromJson(request.getValue(), GameProtocolRequest.class);
         String idPlayer = gcpRequest.getId();
 

@@ -6,6 +6,7 @@
 package httpserver;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import gameprotocol.GameProtocolRequest;
 import gameprotocol.GameProtocolResponse;
@@ -67,7 +68,7 @@ public class ServerComunication implements Runnable {
                 if (redeDaResposta == null) {
                     if (Arrays.equals(sharedBuffer, bytesReq)) {
                         DatagramPacket response = new DatagramPacket("rep".getBytes(), 3, InetAddress.getByName(MULTICAST_IP), multicastSocket.getLocalPort());
-//                        multicastSocket.send(response);
+                        multicastSocket.send(response);
                     } else if (estouPerguntando && Arrays.equals(sharedBuffer, bytesRep)) {
                         InetAddress address = request.getAddress();
                         URL url = new URL("http://" + address.getHostAddress() + ":8000" + "/games");
@@ -92,11 +93,14 @@ public class ServerComunication implements Runnable {
                             while (iterator.hasNext()) {
                                 next += iterator.next();
                             }
+                            next = next.replace("\"{", "{");
+                            next = next.replace("}\"", "}");
                             next = next.replace("\\\"", "\"");
                             next = next.replace("\\\\", "\\");
-                            GameProtocolResponse fromJson = gson.fromJson(next, GameProtocolResponse.class);
+                            next = next.trim();
+                            GameProtocolResponse fromJson;
+                            fromJson = gson.fromJson(next, GameProtocolResponse.class);
                             this.gameProtocolResponses.add(fromJson);
-                            notifyAll();
                         } catch (IOException ex) {
                             Logger.getLogger(ServerComunication.class.getName()).log(Level.SEVERE, null, ex);
                         }
