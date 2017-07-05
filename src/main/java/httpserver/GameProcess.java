@@ -144,7 +144,7 @@ public class GameProcess {
                     case LIST_TROPHY:
                         trophyList = playerController.getTrophyList(player);
                         code = 200;
-                        data = gson.toJson(trophyList);
+                        data = trophyList;
                         break;
                     case GET_TROPHY:
                         trophyList = player.getTrophyList();
@@ -152,7 +152,7 @@ public class GameProcess {
                         trophyName = (String) jData.get("");
                         for (Trophy trophy1 : trophyList) {
                             if (trophy1.getNameTrophy().equals(trophyName)) {
-                                data = gson.toJson(trophy1);
+                                data = trophy1;
                                 code = 200;
                                 break;
                             }
@@ -183,7 +183,7 @@ public class GameProcess {
 //                        trophyList = player.getTrophyList();
 //                        objectList.add(trophyList);
                             code = 200;
-                            data = gson.toJson(objectList);
+                            data = objectList;
                         } else {
                             code = 401;
                             data = "Usuário ou senha inválidos.";
@@ -204,6 +204,11 @@ public class GameProcess {
                         playerController.updateLevel(level, player);
                         code = 200;
                         data = "ok";
+                        break;
+                    case GET_RANKING:
+                        List<Level> teenBetter = levelController.getTeenBetter();
+                        data = teenBetter;
+                        code = 200;
                         break;
                     default:
                         code = 200;

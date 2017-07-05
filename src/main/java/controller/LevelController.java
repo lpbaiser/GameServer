@@ -49,6 +49,7 @@ public class LevelController {
         for (Level level : levelList) {
             i++;
             if (levelList.size() <= i) {
+                level.setPlayerNomePlayer(null);
                 newLevelList.add(level);
             }
         }
