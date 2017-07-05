@@ -33,6 +33,7 @@ class ServerComm {
     }
 
     static afterLogin() {
+        window.localStorage.setItem('usuario', Config.USER_ID);
         console.log("listTrophy AND listImages")
         ServerComm.listTrophy(function (trophys) {
             console.log(trophys)
